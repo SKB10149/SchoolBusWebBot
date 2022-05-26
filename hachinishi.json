@@ -1,0 +1,61 @@
+{
+    "type": "bubble",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "weight": "bold",
+          "size": "xl",
+          "margin": "none",
+          "align": "center",
+          "text": "八王子西特別支援学校"
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "message",
+            "label": "陣馬",
+            "text": "陣馬"
+          }
+        },
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "message",
+            "label": "石川",
+            "text": "石川"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "川口",
+            "text": "川口"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "大和田",
+            "text": "大和田"
+          }
+        }
+      ],
+      "flex": 0
+    }
+  }

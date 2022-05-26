@@ -1,0 +1,45 @@
+{
+    "type": "bubble",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "weight": "bold",
+          "size": "xl",
+          "margin": "none",
+          "align": "center",
+          "text": "清瀬特別支援学校"
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "message",
+            "label": "富士見町",
+            "text": "富士見町"
+          }
+        },
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "message",
+            "label": "東村山",
+            "text": "東村山"
+          }
+        }
+      ],
+      "flex": 0
+    }
+  }

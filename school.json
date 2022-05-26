@@ -1,0 +1,133 @@
+{
+    "type": "bubble",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "学校名一覧",
+          "weight": "bold",
+          "size": "xl",
+          "margin": "none",
+          "align": "center"
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "message",
+            "label": "羽村特別支援学校",
+            "text": "羽村特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "message",
+            "label": "村山特別支援学校",
+            "text": "村山特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "あきる野学園",
+            "text": "あきる野学園"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "八王子西特別支援学校",
+            "text": "八王子西特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "七生特別支援学校",
+            "text": "七生特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "青峰学園",
+            "text": "青峰学園"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "八王子盲学校",
+            "text": "八王子盲学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "武蔵台学園",
+            "text": "武蔵台学園"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "田無特別支援学校",
+            "text": "田無特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "清瀬特別支援学校",
+            "text": "清瀬特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "立川学園",
+            "text": "立川学園"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "小金井特別支援学校",
+            "text": "小金井特別支援学校"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "光明学園",
+            "text": "光明学園"
+          }
+        }
+      ],
+      "flex": 0
+    }
+  }
