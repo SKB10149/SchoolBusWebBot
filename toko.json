@@ -54,7 +54,7 @@
         "action": {
           "type": "message",
           "label": "-",
-          "text": "null"
+          "text": ""
         }
       },
       {

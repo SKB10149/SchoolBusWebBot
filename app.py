@@ -15,11 +15,12 @@ import json
 import gspread
 from google.oauth2.service_account import Credentials
 
+## Flask ##
 app = Flask(__name__)
 
+## JSONリスト ##
 # 学校名一覧JSON
 flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
-
 # コース名一覧JSON
 flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
 flex_message_hachimojson_dict = json.load(open("hachimo.json","r",encoding="utf-8"))
@@ -35,15 +36,18 @@ flex_message_nanaojson_dict = json.load(open("nanao.json","r",encoding="utf-8"))
 flex_message_seihojson_dict = json.load(open("seiho.json","r",encoding="utf-8"))
 flex_message_tachikawajson_dict = json.load(open("tachikawa.json","r",encoding="utf-8"))
 flex_message_tanashijson_dict = json.load(open("tanashi.json","r",encoding="utf-8"))
-
 # 登校JSON
 flex_message_tokojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
 # 下校JSON
 flex_message_gekojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
+# 備考JSON
+flex_message_bikojson_dict = json.load(open("biko.json","r",encoding="utf-8"))
 
+## LINE ##
 line_bot_api = LineBotApi('LLaHIWKNBgwVlozdgSFtk3hYMa04AfYtEdGvXyYMIWZIIMUaZspah844LxKvxbARfEcKr0J8BeNi6jC47Eww4jbBu/lF43MgGJiwufZyL2XLP4J0bZXl+PDZVY5FOPg0kfQT4aYT3DZxj3fG3s/s/QdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
 
+## Google Spread Sheet ##
 # お決まりの文句
 # 2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
 #scope = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
@@ -57,10 +61,12 @@ handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
 # スプレッドシート（ブック）を開く
 #workbook = gc.open_by_key(SPREADSHEET_KEY)
 
+# Connect test
 @app.route("/")
 def test():
     return "OK"
 
+# Main App Program
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -160,7 +166,7 @@ def handle_message(event):
         users[userId]["cource"] = event.message.text
         users[userId]["result"] += "、" + users[userId]["cource"] + "コース"
         reply_message = f"{users[userId]['result']} が入力されました。"
-        reply_message2 = "\n\n氏名(ひらがな or カタカナ)を入力してください。"
+        reply_message2 = "氏名(ひらがな or カタカナ)を入力してください。"
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -192,7 +198,7 @@ def handle_message(event):
             users[userId]["dateFrom"] = event.message.text
             users[userId]["result"] += "、" + users[userId]["dateFrom"] + " ～ "
             reply_message = f"{users[userId]['result']} "
-            reply_message2 = "いつまで？(例:2022年5月1日、明日)"
+            reply_message2 = "いつまで？(例:2022年5月1日 2022/5/1)"
             line_bot_api.reply_message(
                 event.reply_token,
                 [
@@ -269,6 +275,10 @@ def handle_message(event):
             [
                 TextSendMessage(text=reply_message),
                 TextSendMessage(text=reply_message2),
+                FlexSendMessage(
+                    alt_text="alt_text",
+                    contents=flex_message_bikojson_dict
+                )
             ]
         )
         users[userId]["mode"] = 7
@@ -276,7 +286,7 @@ def handle_message(event):
     # 備考
     elif users[userId]["mode"] == 7:
         users[userId]["biko"] = event.message.text
-        users[userId]["result"] += "\n特記事項「　" + users[userId]["biko"] + "　」"
+        users[userId]["result"] += "\n特記事項「 " + users[userId]["biko"] + " 」"
         reply_message = f"{users[userId]['result']} "
         reply_message2 = "乗車連絡を受け付けました。\nご連絡ありがとうございました。"
         line_bot_api.reply_message(
