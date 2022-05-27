@@ -84,12 +84,6 @@ users = {}
 def handle_message(event):
     userId = event.source.user_id
     
-    # 裏コマンド（ネタ）
-    if event.message.text == "ぬるぽ":
-        reply_message = "ｶﾞｯ"
-        users[userId]["mode"] = 0
-        repMessage(event, reply_message)
-    
     # 乗車受付ボタン
     if event.message.text == "乗車受付":
         if not userId in users: #usersにuserIdがまだ入っていなければ真
@@ -146,41 +140,43 @@ def handle_message(event):
         
         users[userId]["school"] = event.message.text
         users[userId]["result"] += users[userId]["school"]
-        reply_message = f"{users[userId]['result']} が入力されました。\n\n続いて、コース名を選択してください。"
+        reply_message = f"{users[userId]['result']}"
+        reply_message2 = "\n\nコース名を選択してください。"
         line_bot_api.reply_message(
             event.reply_token,
             [
                 TextSendMessage(text=reply_message),
+                TextSendMessage(text=reply_message2),
                 FlexSendMessage(
                     alt_text="alt_text",
                     contents=flex_message_json_dict
                 )
             ]
         )
-        users[userId]["mode"] += 1
+        users[userId]["mode"] = 1
 
     # コース名
     elif users[userId]["mode"] == 1: 
         users[userId]["cource"] = event.message.text
         users[userId]["result"] += "、" + users[userId]["cource"] + "コース"
         reply_message = f"{users[userId]['result']} が入力されました。"
-        reply_message2 = "続いて、氏名を入力してください。"
+        reply_message2 = "\n\n氏名(ひらがな or カタカナ)を入力してください。"
         line_bot_api.reply_message(
             event.reply_token,
             [
                 TextSendMessage(text=reply_message),
-                TextSendMessage(text=reply_message2),
+                TextSendMessage(text=reply_message2), #氏名
             ]
         )
-        users[userId]["mode"] += 1
+        users[userId]["mode"] = 2
 
     # 氏名
     elif users[userId]["mode"] == 2:
         if event.message.text != "":
             users[userId]["shimei"] = event.message.text
             users[userId]["result"] += "、" + users[userId]["shimei"] + "さん"
-            reply_message = f"{users[userId]['result']} が入力されました。"
-            reply_message2 = "いつから？(例:2022年5月1日、今日)"
+            reply_message = f"{users[userId]['result']} "
+            reply_message2 = "いつから？(例:2022年5月1日 2022/5/1)"
             line_bot_api.reply_message(
                 event.reply_token,
                 [
@@ -188,7 +184,7 @@ def handle_message(event):
                     TextSendMessage(text=reply_message2),
                 ]
             )
-            users[userId]["mode"] += 1
+            users[userId]["mode"] = 3
 
     # いつから
     elif users[userId]["mode"] == 3:
@@ -204,7 +200,7 @@ def handle_message(event):
                     TextSendMessage(text=reply_message2),
                 ]
             )
-            users[userId]["mode"] += 1
+            users[userId]["mode"] = 4
 
     # いつまで
     elif users[userId]["mode"] == 4:
@@ -224,7 +220,7 @@ def handle_message(event):
             )
                 ]
             )
-            users[userId]["mode"] += 1
+            users[userId]["mode"] = 5
 
     # 登校乗る、乗らない、または空白
     elif users[userId]["mode"] == 5:
@@ -246,7 +242,7 @@ def handle_message(event):
                     TextSendMessage(text=reply_message2),
                 ]
             )
-            users[userId]["mode"] += 2
+            users[userId]["mode"] = 7
         else:
             reply_message2 = "下校便の乗車について"
             line_bot_api.reply_message(
@@ -260,7 +256,7 @@ def handle_message(event):
             )
                 ]
             )
-            users[userId]["mode"] += 1
+            users[userId]["mode"] = 6
 
     # 下校乗る、乗らない、または空白
     elif users[userId]["mode"] == 6:
@@ -275,7 +271,7 @@ def handle_message(event):
                 TextSendMessage(text=reply_message2),
             ]
         )
-        users[userId]["mode"] += 1
+        users[userId]["mode"] = 7
 
     # 備考
     elif users[userId]["mode"] == 7:
@@ -292,26 +288,13 @@ def handle_message(event):
         )
         users[userId]["mode"] = 0
 
-    # 例    
-    # elif event.message.text == "勉強開始":
-    #     reply_message = "計測を開始しました。"
-    #     if not userId in users:
-    #         users[userId] = {}
-    #         users[userId]["total"] = 0
-    #     users[userId]["start"] = time()
-    # elif event.message.text == "勉強終了":
-    #     end = time()
-    #     difference = int(end - users[userId]["start"])
-    #     users[userId]["total"] += difference
-    #     hour = difference // 3600
-    #     minute = (difference % 3600) //60
-    #     second = difference % 60
-    #     reply_message = f"勉強時間は,「 {hour}時間{minute}分{second}秒 」でした。おつかれさん！合計で{users[userId]['total']}秒勉強しています。"
-    # 例の終了
-
-    # line_bot_api.reply_message(
-    #         event.reply_token,
-    #         TextSendMessage(text=reply_message))
+    # 裏コマンド（ネタ）
+    elif event.message.text == "ぬるぽ":
+        if not userId in users: #usersにuserIdがまだ入っていなければ真
+            users[userId] = {}
+        reply_message = "ｶﾞｯ"
+        users[userId]["mode"] = 0
+        repMessage(event, reply_message)
 
 # LINEへメッセージを送信する処理関数
 def repMessage(event, reply_message):
