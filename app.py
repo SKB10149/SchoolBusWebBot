@@ -57,6 +57,10 @@ handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
 # スプレッドシート（ブック）を開く
 #workbook = gc.open_by_key(SPREADSHEET_KEY)
 
+@app.route("/")
+def test():
+    return "OK"
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
