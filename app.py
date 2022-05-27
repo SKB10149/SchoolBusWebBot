@@ -85,6 +85,7 @@ def callback():
 
     return 'OK'
 
+from time import time
 users = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
