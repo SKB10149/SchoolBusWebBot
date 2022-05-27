@@ -1,1 +1,1 @@
-web: gunicorn -k uvicorn.workers.UvicornWorker app:api
+web: gunicorn app:app --log-file -
