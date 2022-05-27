@@ -12,7 +12,8 @@ from linebot.models import (
 )
 import json
 
-#from pyparsing import line
+import gspread
+from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 
@@ -42,6 +43,19 @@ flex_message_gekojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
 
 line_bot_api = LineBotApi('LLaHIWKNBgwVlozdgSFtk3hYMa04AfYtEdGvXyYMIWZIIMUaZspah844LxKvxbARfEcKr0J8BeNi6jC47Eww4jbBu/lF43MgGJiwufZyL2XLP4J0bZXl+PDZVY5FOPg0kfQT4aYT3DZxj3fG3s/s/QdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
+
+# お決まりの文句
+# 2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
+#scope = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
+#ダウンロードしたjsonファイル名をクレデンシャル変数に設定。
+#credentials = Credentials.from_service_account_file("JSONファイルのパス", scopes=scope)
+#OAuth2の資格情報を使用してGoogle APIにログイン。
+#gc = gspread.authorize(credentials)
+
+#スプレッドシートIDを変数に格納する。
+#SPREADSHEET_KEY = 'シートID'
+# スプレッドシート（ブック）を開く
+#workbook = gc.open_by_key(SPREADSHEET_KEY)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -160,7 +174,7 @@ def handle_message(event):
         if event.message.text != "":
             users[userId]["shimei"] = event.message.text
             users[userId]["result"] += "、" + users[userId]["shimei"] + "さん"
-            reply_message = f"{users[userId]['result']}さん が入力されました。"
+            reply_message = f"{users[userId]['result']} が入力されました。"
             reply_message2 = "いつから？(例:2022年5月1日、今日)"
             line_bot_api.reply_message(
                 event.reply_token,
@@ -210,7 +224,12 @@ def handle_message(event):
     # 登校乗る、乗らない、または空白
     elif users[userId]["mode"] == 5:
         users[userId]["toko"] = event.message.text
-        users[userId]["result"] += users[userId]["toko"]
+
+        if event.message.text != "休む":
+            users[userId]["result"] += "\n登校便：　" + users[userId]["toko"]
+        else:
+            users[userId]["result"] += users[userId]["toko"]
+
         reply_message = f"{users[userId]['result']} "
         
         if event.message.text == "休む":
