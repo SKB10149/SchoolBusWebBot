@@ -83,6 +83,7 @@ def handle_message(event):
     # 裏コマンド（ネタ）
     if event.message.text == "ぬるぽ":
         reply_message = "ｶﾞｯ"
+        users[userId]["mode"] = 0
         repMessage(event, reply_message)
     
     # 乗車受付ボタン
