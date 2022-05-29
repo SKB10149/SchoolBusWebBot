@@ -13,7 +13,7 @@ from linebot.models import (
 import json
 
 import gspread
-from google.oauth2.service_account import Credentials
+from oauth2client.service_account import ServiceAccountCredentials
 
 ## Flask ##
 app = Flask(__name__)
@@ -48,18 +48,26 @@ line_bot_api = LineBotApi('LLaHIWKNBgwVlozdgSFtk3hYMa04AfYtEdGvXyYMIWZIIMUaZspah
 handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
 
 ## Google Spread Sheet ##
-# お決まりの文句
-# 2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
-#scope = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
+# ※2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
+scope = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
 #ダウンロードしたjsonファイル名をクレデンシャル変数に設定。
-#credentials = Credentials.from_service_account_file("JSONファイルのパス", scopes=scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("schoolbusserviceproject-8d96da3b9fb3.json", scope)
 #OAuth2の資格情報を使用してGoogle APIにログイン。
-#gc = gspread.authorize(credentials)
+gc = gspread.authorize(credentials)
 
-#スプレッドシートIDを変数に格納する。
-#SPREADSHEET_KEY = 'シートID'
-# スプレッドシート（ブック）を開く
-#workbook = gc.open_by_key(SPREADSHEET_KEY)
+# ①「名前」で取得
+wb = gc.open('schoolbus')
+print(wb)
+ 
+# ②「キー」で取得
+SPREADSHEET_KEY = '1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M'
+wb = gc.open_by_key(SPREADSHEET_KEY)
+print(wb)
+ 
+# ③「URL」で取得
+SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M/edit#gid=0'
+wb = gc.open_by_url(SPREADSHEET_URL)
+print(wb)
 
 # Connect test
 @app.route("/")
