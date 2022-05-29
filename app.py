@@ -150,17 +150,17 @@ ws = wb.worksheet('school Bus Uketsuke Sheet')
 #     print(data)
 
 # ①全ての値（A1:B7）を二次元リストで取得
-list_of_lists = ws.get_all_values() 
-print("--- 全ての値（A1:B7）を二次元リストで出力 ---")
-print(list_of_lists)
+# list_of_lists = ws.get_all_values() 
+# print("--- 全ての値（A1:B7）を二次元リストで出力 ---")
+# print(list_of_lists)
 # ②2列目の2つ目（B2）の値を出力
-print("--- 2列目の2つ目（B2）の値を出力 ---")
-print(list_of_lists[1][1])
+# print("--- 2列目の2つ目（B2）の値を出力 ---")
+# print(list_of_lists[1][1])
 # ③全ての値を1つずつ出力
-print("--- 全ての値を1つずつ出力 ---")
-for row_data in list_of_lists:
-    for data in row_data:
-        print(data)
+# print("--- 全ての値を1つずつ出力 ---")
+# for row_data in list_of_lists:
+#     for data in row_data:
+#         print(data)
 
 # Connect test
 @app.route("/")
@@ -212,6 +212,7 @@ def handle_message(event):
 
     # 学校名
     elif users[userId]["mode"] == 0:
+        ws = wb.worksheet('school Bus Uketsuke Sheet')
         ws.update.cell(2,4,event.message.text)
         if event.message.text == "羽村特別支援学校":
             flex_message_json_dict = flex_message_hamurajson_dict
