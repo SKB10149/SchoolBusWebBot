@@ -22,7 +22,7 @@ app = Flask(__name__)
 # 学校名一覧JSON
 flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
 # コース名一覧JSON
-flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
+# flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
 flex_message_hachimojson_dict = json.load(open("hachimo.json","r",encoding="utf-8"))
 flex_message_hachinishijson_dict = json.load(open("hachinishi.json","r",encoding="utf-8"))
 flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
@@ -218,6 +218,7 @@ def handle_message(event):
         elif event.message.text == "八王子西特別支援学校":
             flex_message_json_dict = flex_message_hachinishijson_dict
         elif event.message.text == "あきる野学園":
+            flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
             flex_message_json_dict = flex_message_akirunojson_dict
         elif event.message.text == "七生特別支援学校":
             flex_message_json_dict = flex_message_nanaojson_dict
@@ -249,7 +250,7 @@ def handle_message(event):
         
         users[userId]["school"] = event.message.text
         temp = 5
-        ws.update.cell(2,4,temp)
+        # ws.update.cell(2,4,temp)
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "コース名を選択してください。"
