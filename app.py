@@ -249,6 +249,7 @@ def handle_message(event):
         
         users[userId]["school"] = event.message.text
         # ws.update.cell(2,4,users[userId]["school"])
+        ws.update_cell(2, 4, 5)
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "\n\nコース名を選択してください。"
