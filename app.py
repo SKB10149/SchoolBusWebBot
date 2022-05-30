@@ -248,7 +248,7 @@ def handle_message(event):
             exit()
         
         users[userId]["school"] = event.message.text
-        temp = users[userId]["school"]
+        temp = 5
         ws.update.cell(2,4,temp)
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
