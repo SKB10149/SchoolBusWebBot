@@ -182,8 +182,8 @@ def handle_message(event):
         if not userId in users: #usersにuserIdがまだ入っていなければ真
             users[userId] = {}
         users[userId]["result"] = ""
-        reply_message = "学校名を選択してください。"
-        # reply_message = json.load(open("menu.json","r",encoding="utf-8"))
+        data_dict = json.loads(open("menu.json","r",encoding="utf-8"))
+        reply_message = "学校名を選択してください。{data_dict['messages'][0]}"
         line_bot_api.reply_message(
             event.reply_token,
             [
