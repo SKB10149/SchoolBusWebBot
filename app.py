@@ -248,11 +248,10 @@ def handle_message(event):
             exit()
         
         users[userId]["school"] = event.message.text
-        # ws.update.cell(2,4,users[userId]["school"])
-        ws.update_cell(2, 4, 5)
+        ws.update.cell(2,4,users[userId]["school"])
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
-        reply_message2 = "\n\nコース名を選択してください。"
+        reply_message2 = "コース名を選択してください。"
         line_bot_api.reply_message(
             event.reply_token,
             [
