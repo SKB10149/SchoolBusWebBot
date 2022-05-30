@@ -213,7 +213,6 @@ def handle_message(event):
     # 学校名
     elif users[userId]["mode"] == 0:
         ws = wb.worksheet('school Bus Uketsuke Sheet')
-        ws.update.cell(2,4,event.message.text)
         if event.message.text == "羽村特別支援学校":
             flex_message_json_dict = flex_message_hamurajson_dict
         elif event.message.text == "八王子西特別支援学校":
@@ -249,6 +248,7 @@ def handle_message(event):
             exit()
         
         users[userId]["school"] = event.message.text
+        ws.update.cell(2,4,users[userId]["school"])
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "\n\nコース名を選択してください。"
