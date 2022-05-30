@@ -21,21 +21,6 @@ app = Flask(__name__)
 ## JSONリスト ##
 # 学校名一覧JSON
 flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
-# コース名一覧JSON
-# flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
-flex_message_hachimojson_dict = json.load(open("hachimo.json","r",encoding="utf-8"))
-flex_message_hachinishijson_dict = json.load(open("hachinishi.json","r",encoding="utf-8"))
-flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
-flex_message_kiyosejson_dict = json.load(open("kiyose.json","r",encoding="utf-8"))
-flex_message_kodairajson_dict = json.load(open("kodaira.json","r",encoding="utf-8"))
-flex_message_koganeijson_dict = json.load(open("koganei.json","r",encoding="utf-8"))
-flex_message_komeijson_dict = json.load(open("komei.json","r",encoding="utf-8"))
-flex_message_murayamajson_dict = json.load(open("murayama.json","r",encoding="utf-8"))
-flex_message_musashidaijson_dict = json.load(open("musashidai.json","r",encoding="utf-8"))
-flex_message_nanaojson_dict = json.load(open("nanao.json","r",encoding="utf-8"))
-flex_message_seihojson_dict = json.load(open("seiho.json","r",encoding="utf-8"))
-flex_message_tachikawajson_dict = json.load(open("tachikawa.json","r",encoding="utf-8"))
-flex_message_tanashijson_dict = json.load(open("tanashi.json","r",encoding="utf-8"))
 # 登校JSON
 flex_message_tokojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
 # 下校JSON
@@ -262,8 +247,7 @@ def handle_message(event):
             exit()
         
         users[userId]["school"] = event.message.text
-        temp = 5
-        # ws.update.cell(2,4,temp)
+        ws.update.cell(2,4,users[userId]["school"])
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "コース名を選択してください。"
