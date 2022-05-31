@@ -69,16 +69,20 @@ def handle_message(event):
     #     worksheets[profile.user_id] = RemoteControlGoogleSpreadSheet(profile.display_name)
     #     worksheet = worksheets[profile.user_id]
 
-    # 乗車受付ボタン
+    # 乗車受付ボタン押下
     if event.message.text == "乗車受付":
         if not userId in users: #usersにuserIdがまだ入っていなければ真
             users[userId] = {}
 
+        # 結果を初期化
         users[userId]["result"] = ""
+
         reply_message = "学校名を選択してください。"
+
         # 学校名一覧JSON
         flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
         
+        # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -90,18 +94,20 @@ def handle_message(event):
             ]
         )
         users[userId]["mode"] = 0
-        logging.debug()
         repMessage(event, event.message.text)
+        logging.debug()
 
-    # 学校名
+    # 学校名押下
     elif users[userId]["mode"] == 0:        
-
+        
+        # 選択された学校名を格納
         users[userId]["school"] = event.message.text
+        # 結果へ格納
         users[userId]["result"] += users[userId]["school"]
-        reply_message = f"{users[userId]['result']}"
-        reply_message2 = "コース名を選択してください。"
 
-        # 学校名JSONからコース名を取得
+        reply_message = "コース名を選択してください。"
+
+        # コース名を取得
         if event.message.text == "羽村特別支援学校":
             flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
             flex_message_json_dict = flex_message_hamurajson_dict
@@ -149,11 +155,11 @@ def handle_message(event):
             repMessage(event, reply_message)
             exit()
 
+        # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
             [
                 TextSendMessage(text=reply_message),
-                TextSendMessage(text=reply_message2),
                 FlexSendMessage(
                     alt_text="alt_text",
                     contents=flex_message_json_dict
@@ -161,21 +167,28 @@ def handle_message(event):
             ]
         )
         users[userId]["mode"] = 1
+        repMessage(event, event.message.text)
+        logging.debug()
 
     # コース名
-    elif users[userId]["mode"] == 1: 
+    elif users[userId]["mode"] == 1:
+        # 選択されたコース名を格納
         users[userId]["cource"] = event.message.text
+        # 結果へ書き込み
         users[userId]["result"] += "、" + users[userId]["cource"] + "コース"
-        reply_message = f"{users[userId]['result']} が入力されました。"
-        reply_message2 = "氏名(ひらがな or カタカナ)を入力してください。"
+
+        reply_message = "氏名(ひらがな or カタカナ)を入力してください。"
+
+        # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
             [
                 TextSendMessage(text=reply_message),
-                TextSendMessage(text=reply_message2), #氏名
             ]
         )
         users[userId]["mode"] = 2
+        repMessage(event, event.message.text)
+        logging.debug()
 
     # 氏名
     elif users[userId]["mode"] == 2:
