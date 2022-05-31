@@ -40,112 +40,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name("schoolbusservice
 #OAuth2の資格情報を使用してGoogle APIにログイン。
 gc = gspread.authorize(credentials)
 
-# ①「名前」で取得
-# wb = gc.open('schoolbus')
-# print(wb)
-# ②「キー」で取得
-SPREADSHEET_KEY = '1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M'
-wb = gc.open_by_key(SPREADSHEET_KEY)
-print(wb)
-# ③「URL」で取得
-# SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M/edit#gid=0'
-# wb = gc.open_by_url(SPREADSHEET_URL)
-# print(wb)
-
-# ①「名前」で取得
-ws = wb.worksheet('school Bus Uketsuke Sheet')
-# ②「index」で取得
-# ws = wb.get_worksheet(0)
-# ③「sheet1」で取得
-# ws = wb.sheet1
-# print(ws)
-# 100行、20列の「new worksheet」を新規作成
-# ws = wb.add_worksheet(title="new worksheet", rows=100, cols=20)
-# 「シート1」を「update title」に変更
-# ws.update_title("school Bus Uketsuke Sheet")
-
-# ws0 = wb.get_worksheet(0)  # update titleシート
-# ws1 = wb.get_worksheet(1)  # new worksheetシート
-# print(ws0.id)
-# print(ws1.id)
-
-# wb.duplicate_sheet(source_sheet_id = 957547212, new_sheet_name = "second worksheet")
-# wb.duplicate_sheet(source_sheet_id = 957547212, new_sheet_name = "second worksheet", insert_sheet_index = 2)
-# wb.duplicate_sheet(source_sheet_id = ws1.id, new_sheet_name = "second worksheet", insert_sheet_index = len(wb.worksheets()))
-
-# ワークシートをすべて取得する
-# print(wb.worksheets())
-
-# ワークシート（second worksheet）を削除する
-# ws = wb.get_worksheet(2)
-# wb.del_worksheet(ws)
-
-# A1表記で入力
-# ws.update_acell('A1', 1)
-# ws.update_acell('A2', 2)
-# ws.update_acell('A3', 3)
-# ws.update_acell('A4', '=SUM(A1:A3)')  # 関数も入力可能
-
-# R1C1表記で入力
-# ws.update_cell(1, 2, 4)              # B1
-# ws.update_cell(2, 2, 5)              # B2
-# ws.update_cell(3, 2, 6)              # B3
-# ws.update_cell(4, 2, '=SUM(B1:B3)')  # B4（関数も入力可能）
-
-# A1表記で取得
-# a1 = ws.acell('A1').value  # A1（値:1）
-# print(a1)
-# R1C1表記で取得
-# r1c1 = ws.cell(1, 2).value  # B1（値:4）
-# print(r1c1)
-
-# 複数のセルに値を入力（1行のみ）
-# datas = ["A5追加", "B5追加"]
-# ws.append_row(datas)
-# 複数のセルに値を入力（複数行）
-# datas = [
-#           ["A6追加", "B6追加"],
-#           ["A7追加", "B7追加"],
-#         ]
-# for row_data in datas:
-#     ws.append_row(row_data)
-
-# ①2行目をリストで取得
-# row_list = ws.row_values(2) 
-# print("--- 2行目をリストで出力 ---")
-# print(row_list)
-# ②2行目の2つ目（B2）の値を出力
-# print("--- 2行目の2つ目（B2）の値を出力 ---")
-# print(row_list[1])
-# ③2行目の値を1つずつ出力
-# print("--- 2行目の値を1つずつ出力 ---")
-# for data in row_list:
-#     print(data)
-
-# ①2列目をリストで取得
-# col_list = ws.col_values(2)
-# print("--- 2列目をリストで出力 ---")
-# print(col_list)
-# ②2列目の2つ目（B2）の値を出力
-# print("--- 2列目の2つ目（B2）の値を出力 ---")
-# print(col_list[1])
-# ③2列目の値を1つずつ出力
-# print("--- 2列目の値を1つずつ出力 ---")
-# for data in col_list:
-#     print(data)
-
-# ①全ての値（A1:B7）を二次元リストで取得
-# list_of_lists = ws.get_all_values() 
-# print("--- 全ての値（A1:B7）を二次元リストで出力 ---")
-# print(list_of_lists)
-# ②2列目の2つ目（B2）の値を出力
-# print("--- 2列目の2つ目（B2）の値を出力 ---")
-# print(list_of_lists[1][1])
-# ③全ての値を1つずつ出力
-# print("--- 全ての値を1つずつ出力 ---")
-# for row_data in list_of_lists:
-#     for data in row_data:
-#         print(data)
+SPREADSHEET_KEY = '1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M'\
 
 # Connect test
 @app.route("/")
@@ -176,14 +71,15 @@ users = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userId = event.source.user_id
+    wb = gc.open_by_key(SPREADSHEET_KEY)
+    ws = wb.worksheet('school Bus Uketsuke Sheet')
     
     # 乗車受付ボタン
     if event.message.text == "乗車受付":
         if not userId in users: #usersにuserIdがまだ入っていなければ真
             users[userId] = {}
         users[userId]["result"] = ""
-        data_dict = json.loads(open("menu.json","r",encoding="utf-8"))
-        reply_message = "学校名を選択してください。{data_dict['messages'][0]}"
+        reply_message = "学校名を選択してください。"
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -248,6 +144,7 @@ def handle_message(event):
             exit()
         
         users[userId]["school"] = event.message.text
+        ws.update.cell(2,4,event.message.text)
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "コース名を選択してください。"
