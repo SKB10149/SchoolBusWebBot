@@ -40,7 +40,10 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name("schoolbusservice
 #OAuth2の資格情報を使用してGoogle APIにログイン。
 gc = gspread.authorize(credentials)
 
-SPREADSHEET_KEY = '1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M'\
+SPREADSHEET_KEY = '1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M'
+# wb = gc.open_by_key(SPREADSHEET_KEY)
+# ws = wb.worksheet('schoolBusUketsukeSheet')
+# ws.update_cell(2,4,"学校")
 
 # Connect test
 @app.route("/")
@@ -71,8 +74,6 @@ users = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userId = event.source.user_id
-    wb = gc.open_by_key(SPREADSHEET_KEY)
-    ws = wb.worksheet('school Bus Uketsuke Sheet')
     
     # 乗車受付ボタン
     if event.message.text == "乗車受付":
@@ -144,7 +145,9 @@ def handle_message(event):
             exit()
         
         users[userId]["school"] = event.message.text
-        ws.update.cell(2,4,event.message.text)
+        wb = gc.open_by_key(SPREADSHEET_KEY)
+        ws = wb.worksheet('schoolBusUketsukeSheet')
+        ws.update_cell(2,4,event.message.text)
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "コース名を選択してください。"
