@@ -140,13 +140,13 @@ def handle_message(event):
             users[userId]["mode"] = 0
             exit()
 
-        worksheet.write_to_Todo(event.message.text)
+        # worksheet.write_to_Todo(event.message.text)
         
         users[userId]["school"] = event.message.text
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "コース名を選択してください。"
-        
+
         line_bot_api.reply_message(
             event.reply_token,
             [
