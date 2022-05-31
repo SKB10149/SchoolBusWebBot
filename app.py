@@ -11,6 +11,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, FlexSendMessage, QuickReply
 )
 import json
+import logging
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -89,60 +90,14 @@ def handle_message(event):
             ]
         )
         users[userId]["mode"] = 0
+        logging.debug()
         repMessage(event, event.message.text)
 
     # 学校名
-    elif users[userId]["mode"] == 0:
-        if event.message.text == "羽村特別支援学校":
-            flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_hamurajson_dict
-        elif event.message.text == "八王子西特別支援学校":
-            flex_message_hachinishijson_dict = json.load(open("hachinishi.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_hachinishijson_dict
-        elif event.message.text == "あきる野学園":
-            flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_akirunojson_dict
-        elif event.message.text == "七生特別支援学校":
-            flex_message_nanaojson_dict = json.load(open("nanao.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_nanaojson_dict
-        elif event.message.text == "青峰学園":
-            flex_message_seihojson_dict = json.load(open("seiho.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_seihojson_dict
-        elif event.message.text == "八王子盲学校":
-            flex_message_hachimojson_dict = json.load(open("hachimo.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_hachimojson_dict
-        elif event.message.text == "村山特別支援学校":
-            flex_message_murayamajson_dict = json.load(open("murayama.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_murayamajson_dict
-        elif event.message.text == "武蔵台学園":
-            flex_message_musashidaijson_dict = json.load(open("musashidai.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_musashidaijson_dict
-        elif event.message.text == "田無特別支援学校":
-            flex_message_tanashijson_dict = json.load(open("tanashi.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_tanashijson_dict
-        elif event.message.text == "清瀬特別支援学校":
-            flex_message_kiyosejson_dict = json.load(open("kiyose.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_kiyosejson_dict
-        elif event.message.text == "立川学園":
-            flex_message_tachikawajson_dict = json.load(open("tachikawa.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_tachikawajson_dict
-        elif event.message.text == "小金井特別支援学校":
-            flex_message_koganeijson_dict = json.load(open("koganei.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_koganeijson_dict
-        elif event.message.text == "光明学園":
-            flex_message_komeijson_dict = json.load(open("komei.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_komeijson_dict
-        elif event.message.text == "小平特別支援学校":
-            flex_message_kodairajson_dict = json.load(open("kodaira.json","r",encoding="utf-8"))
-            flex_message_json_dict = flex_message_kodairajson_dict
-        else:
-            reply_message = f"{event.message.text} は、弊社では受け付けておりません。"
-            repMessage(event, reply_message)
-            users[userId]["mode"] = 0
-            exit()
+    elif users[userId]["mode"] == 0:        
+        # 学校名JSONを取得
+        flex_message_json_dict = setSchoolJSON(event.message.text)
 
-        # worksheet.write_to_Todo(event.message.text)
-        
         users[userId]["school"] = event.message.text
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
@@ -317,6 +272,57 @@ def repMessage(event, reply_message):
     line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply_message))
+
+# 学校名のJSONをセッティングする関数
+def setSchoolJSON(event.message.text):
+    if event.message.text == "羽村特別支援学校":
+        flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_hamurajson_dict
+    elif event.message.text == "八王子西特別支援学校":
+        flex_message_hachinishijson_dict = json.load(open("hachinishi.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_hachinishijson_dict
+    elif event.message.text == "あきる野学園":
+        flex_message_akirunojson_dict = json.load(open("akiruno.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_akirunojson_dict
+    elif event.message.text == "七生特別支援学校":
+        flex_message_nanaojson_dict = json.load(open("nanao.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_nanaojson_dict
+    elif event.message.text == "青峰学園":
+        flex_message_seihojson_dict = json.load(open("seiho.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_seihojson_dict
+    elif event.message.text == "八王子盲学校":
+        flex_message_hachimojson_dict = json.load(open("hachimo.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_hachimojson_dict
+    elif event.message.text == "村山特別支援学校":
+        flex_message_murayamajson_dict = json.load(open("murayama.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_murayamajson_dict
+    elif event.message.text == "武蔵台学園":
+        flex_message_musashidaijson_dict = json.load(open("musashidai.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_musashidaijson_dict
+    elif event.message.text == "田無特別支援学校":
+        flex_message_tanashijson_dict = json.load(open("tanashi.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_tanashijson_dict
+    elif event.message.text == "清瀬特別支援学校":
+        flex_message_kiyosejson_dict = json.load(open("kiyose.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_kiyosejson_dict
+    elif event.message.text == "立川学園":
+        flex_message_tachikawajson_dict = json.load(open("tachikawa.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_tachikawajson_dict
+    elif event.message.text == "小金井特別支援学校":
+        flex_message_koganeijson_dict = json.load(open("koganei.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_koganeijson_dict
+    elif event.message.text == "光明学園":
+        flex_message_komeijson_dict = json.load(open("komei.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_komeijson_dict
+    elif event.message.text == "小平特別支援学校":
+        flex_message_kodairajson_dict = json.load(open("kodaira.json","r",encoding="utf-8"))
+        flex_message_json_dict = flex_message_kodairajson_dict
+    else:
+        reply_message = f"{event.message.text} は、弊社では受け付けておりません。"
+        repMessage(event, reply_message)
+        users[userId]["mode"] = 0
+        exit()
+    return flex_message_json_dict
 
 class RemoteControlGoogleSpradSheet:
     def __init__(self, title):
