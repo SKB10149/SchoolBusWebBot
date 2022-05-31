@@ -89,6 +89,7 @@ def handle_message(event):
             ]
         )
         users[userId]["mode"] = 0
+        repMessage(event, event.message.text)
 
     # 学校名
     elif users[userId]["mode"] == 0:
