@@ -15,35 +15,18 @@ import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+worksheets = {} #辞書を初期化する
+separator = "==================="
+
 ## Flask ##
 app = Flask(__name__)
-
-## JSONリスト ##
-# 学校名一覧JSON
-flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
-# 登校JSON
-flex_message_tokojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
-# 下校JSON
-flex_message_gekojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
-# 備考JSON
-flex_message_bikojson_dict = json.load(open("biko.json","r",encoding="utf-8"))
 
 ## LINE ##
 line_bot_api = LineBotApi('LLaHIWKNBgwVlozdgSFtk3hYMa04AfYtEdGvXyYMIWZIIMUaZspah844LxKvxbARfEcKr0J8BeNi6jC47Eww4jbBu/lF43MgGJiwufZyL2XLP4J0bZXl+PDZVY5FOPg0kfQT4aYT3DZxj3fG3s/s/QdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
 
-## Google Spread Sheet ##
-# ※2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
-scope = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
-#ダウンロードしたjsonファイル名をクレデンシャル変数に設定。
-credentials = ServiceAccountCredentials.from_json_keyfile_name("schoolbusserviceproject-8d96da3b9fb3.json", scope)
-#OAuth2の資格情報を使用してGoogle APIにログイン。
-gc = gspread.authorize(credentials)
-
+## Google SpreadSheet ##
 SPREADSHEET_KEY = '1h1QcsQhISVUB8Zbj6mXfAdYYKTn1JHKzJVg-yueCO9M'
-# wb = gc.open_by_key(SPREADSHEET_KEY)
-# ws = wb.worksheet('schoolBusUketsukeSheet')
-# ws.update_cell(2,4,"学校")
 
 # Connect test
 @app.route("/")
@@ -74,13 +57,27 @@ users = {}
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userId = event.source.user_id
-    
+    profile = line_bot_api.get_profile(event.source.user_id)
+
+    try :
+        #ユーザーからテキストメッセージが送信されるたび、そのユーザーidに対応するWorksheetオブジェクトをworksheetに格納
+        worksheet = worksheets[profile.user_id]
+
+    except KeyError:
+        #辞書にインスタンスが登録さてていないと言われたらもう一度登録する,herokuとのラグでたまにおこるぽい
+        worksheets[profile.user_id] = RemoteControlGoogleSpreadSheet(profile.display_name)
+        worksheet = worksheets[profile.user_id]
+
     # 乗車受付ボタン
     if event.message.text == "乗車受付":
         if not userId in users: #usersにuserIdがまだ入っていなければ真
             users[userId] = {}
+
         users[userId]["result"] = ""
         reply_message = "学校名を選択してください。"
+        # 学校名一覧JSON
+        flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
+        
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -95,7 +92,6 @@ def handle_message(event):
 
     # 学校名
     elif users[userId]["mode"] == 0:
-        ws = wb.worksheet('school Bus Uketsuke Sheet')
         if event.message.text == "羽村特別支援学校":
             flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
             flex_message_json_dict = flex_message_hamurajson_dict
@@ -143,14 +139,14 @@ def handle_message(event):
             repMessage(event, reply_message)
             users[userId]["mode"] = 0
             exit()
+
+        worksheet.write_to_Todo(event.message.text)
         
         users[userId]["school"] = event.message.text
-        wb = gc.open_by_key(SPREADSHEET_KEY)
-        ws = wb.worksheet('schoolBusUketsukeSheet')
-        ws.update_cell(2,4,event.message.text)
         users[userId]["result"] += users[userId]["school"]
         reply_message = f"{users[userId]['result']}"
         reply_message2 = "コース名を選択してください。"
+        
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -218,6 +214,8 @@ def handle_message(event):
             users[userId]["result"] += users[userId]["dateTo"]
             reply_message = f"{users[userId]['result']} "
             reply_message2 = "登校便の乗車について"
+            # 登校JSON
+            flex_message_tokojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
             line_bot_api.reply_message(
                 event.reply_token,
                 [
@@ -254,6 +252,8 @@ def handle_message(event):
             users[userId]["mode"] = 7
         else:
             reply_message2 = "下校便の乗車について"
+            # 下校JSON
+            flex_message_gekojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
             line_bot_api.reply_message(
                 event.reply_token,
                 [
@@ -273,6 +273,8 @@ def handle_message(event):
         users[userId]["result"] += users[userId]["geko"]
         reply_message = f"{users[userId]['result']} "
         reply_message2 = "特記事項があれば入力してください。"
+        # 備考JSON
+        flex_message_bikojson_dict = json.load(open("biko.json","r",encoding="utf-8"))
         line_bot_api.reply_message(
             event.reply_token,
             [
@@ -314,6 +316,34 @@ def repMessage(event, reply_message):
     line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply_message))
+
+class RemoteControlGoogleSpradSheet:
+    def __init__(self, title):
+        ## Google Spread Sheet ##
+        # ※2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
+        scope = ['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
+        #ダウンロードしたjsonファイル名をクレデンシャル変数に設定。
+        credentials = ServiceAccountCredentials.from_json_keyfile_name("schoolbusserviceproject-8d96da3b9fb3.json", scope)
+        #OAuth2の資格情報を使用してGoogle APIにログイン。
+        global gc
+        gc = gspread.authorize(credentials)
+        wb = gc.open_by_key(SPREADSHEET_KEY)
+
+        try :
+            #新たにワークシートを作成し、Worksheetオブジェクトをworksheetに格納
+            worksheet = gc.add_worksheet(title=title, rows="100", cols="2")
+        except :
+            #すでにワークシートが存在しているときは、そのワークシートのWorksheetオブジェクトを格納
+            worksheet = gc.worksheet(title)
+
+        self.worksheet = worksheet #worksheetをメンバに格納
+        self.Todo = 1 #書き込む行を指定しているメンバ
+        self.Done = 2 #書き込む行を指定しているメンバ
+        self.worksheet.update_cell(2, self.Todo, "Todo")
+        self.worksheet.update_cell(2, self.Done, "Done")
+
+        # ws = wb.worksheet('schoolBusUketsukeSheet')
+        # ws.update_cell(2,4,event.message.text)
 
 if __name__ == "__main__":
     app.run()
