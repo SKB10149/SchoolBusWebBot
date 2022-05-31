@@ -59,14 +59,14 @@ def handle_message(event):
     userId = event.source.user_id
     profile = line_bot_api.get_profile(event.source.user_id)
 
-    try :
-        #ユーザーからテキストメッセージが送信されるたび、そのユーザーidに対応するWorksheetオブジェクトをworksheetに格納
-        worksheet = worksheets[profile.user_id]
+    # try :
+    #     #ユーザーからテキストメッセージが送信されるたび、そのユーザーidに対応するWorksheetオブジェクトをworksheetに格納
+    #     worksheet = worksheets[profile.user_id]
 
-    except KeyError:
-        #辞書にインスタンスが登録さてていないと言われたらもう一度登録する,herokuとのラグでたまにおこるぽい
-        worksheets[profile.user_id] = RemoteControlGoogleSpreadSheet(profile.display_name)
-        worksheet = worksheets[profile.user_id]
+    # except KeyError:
+    #     #辞書にインスタンスが登録さてていないと言われたらもう一度登録する,herokuとのラグでたまにおこるぽい
+    #     worksheets[profile.user_id] = RemoteControlGoogleSpreadSheet(profile.display_name)
+    #     worksheet = worksheets[profile.user_id]
 
     # 乗車受付ボタン
     if event.message.text == "乗車受付":
