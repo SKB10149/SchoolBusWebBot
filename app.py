@@ -244,7 +244,7 @@ def handle_message(event):
 
 # 学校名が選択されたときの動作
 def selectSchool(event, strSchool):
-    repMessage(event, strSchool)
+    # repMessage(event, strSchool)
     if strSchool == "羽村特別支援学校":
         flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
         flex_message_json_dict = flex_message_hamurajson_dict
