@@ -56,6 +56,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userId = event.source.user_id
+    cources = ["旧青梅","友愛"]
 
     # 乗車受付ボタン押下
     if event.message.text == "乗車受付":
@@ -81,17 +82,18 @@ def handle_message(event):
                 )
             ]
         )
-        # repMessage(event, event.message.text)
 
     # 学校名押下
     elif event.message.text[-2:] == "学校":
         reply_message = event.message.text
-        # repMessage(event, reply_message)
         selectSchool(event, reply_message)
     elif event.message.text[-2:] == "学園":
         reply_message = event.message.text
-        # repMessage(event, reply_message)
         selectSchool(event, reply_message)
+
+    # コース名押下
+    if event.message.text in cources:
+        selectCource(event,event.message.text)
 
     # # コース名
     # elif event.message.text:
@@ -244,7 +246,6 @@ def handle_message(event):
 
 # 学校名が選択されたときの動作
 def selectSchool(event, strSchool):
-    # repMessage(event, strSchool)
     if strSchool == "羽村特別支援学校":
         flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
         flex_message_json_dict = flex_message_hamurajson_dict
