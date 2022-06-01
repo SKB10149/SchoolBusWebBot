@@ -85,11 +85,9 @@ def handle_message(event):
 
     # 学校名押下
     elif event.message.text[-2:] == "学校":
-        reply_message = event.message.text
-        selectSchool(event, reply_message)
+        selectSchool(event, event.message.text)
     elif event.message.text[-2:] == "学園":
-        reply_message = event.message.text
-        selectSchool(event, reply_message)
+        selectSchool(event, event.message.text)
 
     # コース名押下
     elif event.message.text in cources:
@@ -97,7 +95,14 @@ def handle_message(event):
 
     # 氏名入力時
     elif event.message.text not in cources:
-        repMessage(event, event.message.text+"さん")
+        studentName(event,event.message.text)
+    
+    #　いつから？
+    elif event.message.text[-2:] == "さん":
+        dateFrom(event, event.message.text)
+    # いつまで？
+    elif event.message.text[-2:] == "～ ":
+        dateTo(event, event.message.text)
 
     # # コース名
     # elif event.message.text:
@@ -320,14 +325,37 @@ def selectCource(event, strCource):
         ]
     )
 # 氏名の入力時の動作
-def studentName(event):
-    return 0
+def studentName(event,strName):
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text=strName+"さん"),
+            TextSendMessage(text="いつから？")
+        ]
+    )
+
 # いつから？
-def dateFrom(event):
-    return 0
+def dateFrom(event,dateFrom_):
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text=dateFrom_+" ～ "),
+            TextSendMessage(text="いつまで？")
+        ]
+    )
 # いつまで？
-def dateFrom(event):
-    return 0
+def dateTo(event,dateTo_):
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text=dateTo_),
+            TextSendMessage(text="いつまで？")
+        ]
+    )
+
 # 登校便に乗る？休み？
 def rideTokobin(event):
     return 0
@@ -343,6 +371,10 @@ def repMessage(event, reply_message):
     line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply_message))
+
+# @handler.add(FollowEvent)
+
+# @handler.add(UnfollowEvent)
 
 if __name__ == "__main__":
     app.run()
