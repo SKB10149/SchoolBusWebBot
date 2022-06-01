@@ -97,7 +97,7 @@ def handle_message(event):
 
     # 氏名入力時
     elif event.message.text not in cources:
-        repMessage(event, event.message.text)
+        repMessage(event, event.message.text+"さん")
 
     # # コース名
     # elif event.message.text:
@@ -315,7 +315,7 @@ def selectCource(event, strCource):
     line_bot_api.reply_message(
         event.reply_token,
         [
-            TextSendMessage(text=strCource),
+            TextSendMessage(text=strCource+"コース"),
             TextSendMessage(text="氏名を入力して下さい（ひらがな or カタカナ）")
         ]
     )
