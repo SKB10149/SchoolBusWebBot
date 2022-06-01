@@ -81,7 +81,7 @@ def handle_message(event):
                 )
             ]
         )
-        repMessage(event, event.message.text)
+        # repMessage(event, event.message.text)
 
     # 学校名押下
     elif event.message.text[-2:] == "学校":
