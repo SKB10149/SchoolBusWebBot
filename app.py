@@ -288,7 +288,7 @@ def selectSchool(event, strSchool):
         flex_message_kodairajson_dict = json.load(open("kodaira.json","r",encoding="utf-8"))
         flex_message_json_dict = flex_message_kodairajson_dict
     else:
-        reply_message = f"{event.message.text} は、弊社では受け付けておりません。"
+        reply_message = f"{strSchool} は、弊社では受け付けておりません。"
         repMessage(event, reply_message)
         exit()
 
@@ -296,7 +296,7 @@ def selectSchool(event, strSchool):
     line_bot_api.reply_message(
         event.reply_token,
         [
-            TextSendMessage(text=reply_message),
+            TextSendMessage(text=strSchool),
             FlexSendMessage(
                 alt_text="alt_text",
                 contents=flex_message_json_dict
