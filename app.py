@@ -92,9 +92,13 @@ def handle_message(event):
         selectSchool(event, reply_message)
 
     # コース名押下
-    if event.message.text in cources:
-        selectCource(event,event.message.text)
+    elif event.message.text in cources:
+        selectCource(event, event.message.text)
 
+    # 氏名入力時
+    elif event.message.text not in cources:
+        repMessage(event, "氏名が入力されたよ")
+        
     # # コース名
     # elif event.message.text:
     #     selectCource():
