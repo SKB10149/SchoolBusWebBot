@@ -339,7 +339,7 @@ def studentName(event,strName):
         event.reply_token,
         [
             TextSendMessage(text=strName+"さん"),
-            TextSendMessage(quick_reply="いつから？")
+            TextSendMessage(text="いつから？")
         ]
     )
 
