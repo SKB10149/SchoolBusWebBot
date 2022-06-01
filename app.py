@@ -87,11 +87,11 @@ def handle_message(event):
     elif event.message.text[-2:] == "学校":
         reply_message = event.message.text
         repMessage(event, reply_message)
-        selectSchool(event, event.message.text)
+        selectSchool(event, reply_message)
     elif event.message.text[-2:] == "学園":
         reply_message = event.message.text
         repMessage(event, reply_message)
-        selectSchool(event, event.message.text)
+        selectSchool(event, reply_message)
 
     # # コース名
     # elif event.message.text:
