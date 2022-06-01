@@ -86,11 +86,11 @@ def handle_message(event):
     # 学校名押下
     elif event.message.text[-2:] == "学校":
         reply_message = event.message.text
-        repMessage(event, reply_message)
+        # repMessage(event, reply_message)
         selectSchool(event, reply_message)
     elif event.message.text[-2:] == "学園":
         reply_message = event.message.text
-        repMessage(event, reply_message)
+        # repMessage(event, reply_message)
         selectSchool(event, reply_message)
 
     # # コース名
