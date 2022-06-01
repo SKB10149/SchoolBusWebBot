@@ -17,6 +17,9 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 from time import time
+from datetime import date, datetime
+
+#from flask_moment import Moment
 
 users = {}
 worksheets = {} #辞書を初期化する
@@ -97,11 +100,15 @@ def handle_message(event):
     elif event.message.text not in cources:
         studentName(event,event.message.text)
     
-    #　いつから？
-    elif event.message.text[-2:] == "さん":
+    # いつから？
+    elif event.message.text == "いつから？":
+        # ex:20220601 -> 2022/06/01に変換して格納する
+        # 桁数は8桁とする
         dateFrom(event, event.message.text)
     # いつまで？
-    elif event.message.text[-2:] == "～ ":
+    elif event.message.text == "いつまで？":
+        # ex:20220601 -> 2022/06/01
+        # 桁数は8桁とする
         dateTo(event, event.message.text)
 
     # # コース名
@@ -324,6 +331,7 @@ def selectCource(event, strCource):
             TextSendMessage(text="氏名を入力して下さい（ひらがな or カタカナ）")
         ]
     )
+
 # 氏名の入力時の動作
 def studentName(event,strName):
     # LINEで表示
@@ -337,34 +345,58 @@ def studentName(event,strName):
 
 # いつから？
 def dateFrom(event,dateFrom_):
+    tempFrom = datetime.strptime(dateFrom_, "%Y/%m/%d").date()
     # LINEで表示
     line_bot_api.reply_message(
         event.reply_token,
         [
-            TextSendMessage(text=dateFrom_+" ～ "),
-            TextSendMessage(text="いつまで？")
-        ]
-    )
-# いつまで？
-def dateTo(event,dateTo_):
-    # LINEで表示
-    line_bot_api.reply_message(
-        event.reply_token,
-        [
-            TextSendMessage(text=dateTo_),
+            TextSendMessage(text=tempFrom+" ～ "),
             TextSendMessage(text="いつまで？")
         ]
     )
 
+# いつまで？
+def dateTo(event,dateTo_):
+    tempTo = datetime.strptime(dateTo_, "%Y/%m/%d").date()
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text=tempTo),
+            #FlexMessage登校便乗る？休み
+        ]
+    )
+
 # 登校便に乗る？休み？
-def rideTokobin(event):
-    return 0
+def rideTokobin(event,toko):
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text="工事中"),
+            #FlexMessage下校便乗る？休み
+        ]
+    )
 # 下校便に乗る？
-def rideGekobin(event):
-    return 0
+def rideGekobin(event,geko):
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text="工事中"),
+            #FlexMessage特記事項
+        ]
+    )
+    
 # 特記事項
-def spMessage(event):
-    return 0
+def spMessage(event,biko):
+    # LINEで表示
+    line_bot_api.reply_message(
+        event.reply_token,
+        [
+            TextSendMessage(text="工事中")
+        ]
+    )
 
 # LINEへメッセージを送信する処理関数
 def repMessage(event, reply_message):
@@ -372,8 +404,9 @@ def repMessage(event, reply_message):
             event.reply_token,
             TextSendMessage(text=reply_message))
 
-# @handler.add(FollowEvent)
 
+
+# @handler.add(FollowEvent)
 # @handler.add(UnfollowEvent)
 
 if __name__ == "__main__":
