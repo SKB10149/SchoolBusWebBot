@@ -111,24 +111,23 @@ def handle_message(event):
     elif event.message.text in cources:
         selectCource(event, event.message.text)
 
-    # 氏名 いつから？　いつまで？　登校便　下校便　特記事項　入力時
+    # コース名以外の入力時
     elif event.message.text not in cources:
-        # 氏名入力時
-        if users[userId]["Shimei"] == "":
-            users[userId]["Shimei"] = event.message.text
-            studentName(event,event.message.text)
-        # いつから？
-        elif users[userId]["From"] == "":
-            # ex:20220601 -> 2022/06/01に変換して格納する
-            # 桁数は8桁とする
-            dateFrom(event, event.message.text)
-        # いつまで？
-        elif users[userId]["To"] == "":
-            # ex:20220601 -> 2022/06/01
-            # 桁数は8桁とする
-            dateTo(event, event.message.text)
-        else:
-            repMessage(event, event.message.text)
+        users[userId]["Shimei"] = event.message.text
+        studentName(event,event.message.text)
+        
+    # いつから？
+    elif users[userId]["From"] == "":
+        # ex:20220601 -> 2022/06/01に変換して格納する
+        # 桁数は8桁とする
+        dateFrom(event, event.message.text)
+    # いつまで？
+    elif users[userId]["To"] == "":
+        # ex:20220601 -> 2022/06/01
+        # 桁数は8桁とする
+        dateTo(event, event.message.text)
+    else:
+        repMessage(event, event.message.text)
 
     # # コース名
     # elif event.message.text:
@@ -345,12 +344,17 @@ def selectCource(event, strCource):
 
 # 氏名の入力時の動作
 def studentName(event,strName):
+    flex_message_json_dict = json.load(open("submenu.json","r",encoding="utf-8"))
     # LINEで表示
     line_bot_api.reply_message(
         event.reply_token,
         [
             TextSendMessage(text=strName+"さん"),
-            TextSendMessage(text="いつから？")
+            TextSendMessage(text="いつから？"),
+            FlexSendMessage(
+                alt_text="alt_text",
+                contents=flex_message_json_dict
+            )
         ]
     )
 
