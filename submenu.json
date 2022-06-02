@@ -24,10 +24,9 @@
         "type": "button",
         "height": "sm",
         "action": {
-          "type": "datetimepicker",
-          "label": "いつから？",
-          "data": "dateFrom",
-          "mode": "date"
+          "type": "postback",
+          "label": "action",
+          "data": "hello"
         }
       },
       {
