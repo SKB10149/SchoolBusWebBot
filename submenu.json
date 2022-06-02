@@ -43,9 +43,8 @@
     "flex": 0
   },
   "action": {
-    "type": "datetimepicker",
+    "type": "postback",
     "label": "action",
-    "data": "hello",
-    "mode": "date"
+    "data": "hello"
   }
 }
