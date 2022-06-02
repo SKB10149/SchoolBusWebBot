@@ -76,6 +76,10 @@ def handle_message(event):
         reply_message = "ｶﾞｯ"
         repMessage(event, reply_message)
 
+    elif event.message.text == "2022年06月02日":
+        reply_message = "ｶﾞｯ"
+        repMessage(event, reply_message)
+
     # 乗車受付ボタン押下
     elif event.message.text == "乗車受付":
         if not userId in users: #usersにuserIdがまだ入っていなければ真
