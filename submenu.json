@@ -1,0 +1,46 @@
+{
+    "type": "bubble",
+    "direction": "ltr",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "日付を選択",
+          "weight": "bold",
+          "size": "xl",
+          "margin": "none",
+          "align": "center"
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "md",
+      "contents": [
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "datetimepicker",
+            "label": "いつから？",
+            "data": "action=setdate",
+            "mode": "date"
+          }
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "datetimepicker",
+            "label": "いつまで？",
+            "data": "action=setdate",
+            "mode": "date"
+          }
+        }
+      ],
+      "flex": 0
+    }
+  }
