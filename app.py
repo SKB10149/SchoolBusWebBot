@@ -357,14 +357,12 @@ def studentName(event,strName):
             TextSendMessage(text=strName+"さん"),
             TextSendMessage(text="いつから？"),
             FlexSendMessage(
-                alt_text="dateFrom",
+                alt_text="alt_text",
                 contents=flex_message_json_dict
             )
         ]
     )
-    reply_message = event.message.text
-    repMessage(event, reply_message)
-
+    
 # いつから？
 def dateFrom(event,dateFrom_):
     tempFrom = datetime.strptime(dateFrom_, "%Y/%m/%d").date()
