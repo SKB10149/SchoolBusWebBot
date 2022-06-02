@@ -118,15 +118,17 @@ def handle_message(event):
             users[userId]["Shimei"] = event.message.text
             studentName(event,event.message.text)
         # いつから？
-        elif event.message.text == "いつから？":
+        elif users[userId]["From"] == "":
             # ex:20220601 -> 2022/06/01に変換して格納する
             # 桁数は8桁とする
             dateFrom(event, event.message.text)
         # いつまで？
-        elif event.message.text == "いつまで？":
+        elif users[userId]["To"] == "":
             # ex:20220601 -> 2022/06/01
             # 桁数は8桁とする
             dateTo(event, event.message.text)
+        else:
+            repMessage(event, event.message.text)
 
     # # コース名
     # elif event.message.text:
