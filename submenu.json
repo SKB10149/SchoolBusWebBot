@@ -26,7 +26,7 @@
         "action": {
           "type": "datetimepicker",
           "label": "いつから？",
-          "data": "action=datetemp&selectId=1",
+          "data": "dateFrom",
           "mode": "date"
         }
       },
@@ -35,11 +35,16 @@
         "action": {
           "type": "datetimepicker",
           "label": "いつまで？",
-          "data": "action=datetemp&selectId=2",
+          "data": "dateTo",
           "mode": "date"
         }
       }
     ],
     "flex": 0
+  },
+  "action": {
+    "type": "postback",
+    "label": "action",
+    "data": "date"
   }
 }
