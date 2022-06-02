@@ -22,24 +22,22 @@
       "contents": [
         {
           "type": "button",
-          "style": "link",
           "height": "sm",
           "action": {
             "type": "datetimepicker",
             "label": "いつから？",
             "data": "hello",
-            "mode": "date",
-            "text": "date"
+            "mode": "date"
           }
         },
         {
           "type": "button",
+          "height": "sm",
           "action": {
             "type": "datetimepicker",
             "label": "いつまで？",
             "data": "action=setdate",
-            "mode": "date",
-            "text": "date"
+            "mode": "date"
           }
         }
       ],
