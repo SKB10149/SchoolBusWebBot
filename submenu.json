@@ -27,7 +27,7 @@
           "action": {
             "type": "datetimepicker",
             "label": "いつから？",
-            "data": "action=setdate",
+            "data": "hello",
             "mode": "date"
           }
         },
