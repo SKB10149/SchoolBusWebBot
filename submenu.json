@@ -28,7 +28,8 @@
             "type": "datetimepicker",
             "label": "いつから？",
             "data": "hello",
-            "mode": "date"
+            "mode": "date",
+            "text": "date"
           }
         },
         {
@@ -37,7 +38,8 @@
             "type": "datetimepicker",
             "label": "いつまで？",
             "data": "action=setdate",
-            "mode": "date"
+            "mode": "date",
+            "text": "date"
           }
         }
       ],
