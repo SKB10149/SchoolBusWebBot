@@ -362,6 +362,8 @@ def studentName(event,strName):
             )
         ]
     )
+    reply_message = event.message.text
+    repMessage(event, reply_message)
 
 # いつから？
 def dateFrom(event,dateFrom_):
