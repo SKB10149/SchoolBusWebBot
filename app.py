@@ -113,7 +113,7 @@ def handle_message(event):
 
     # コース名以外の入力時
     elif event.message.text not in cources:
-        users[userId]["Shimei"] = event.message.text
+        #users[userId]["Shimei"] = event.message.text
         studentName(event,event.message.text)
         
     # いつから？
