@@ -71,6 +71,11 @@ def handle_message(event):
             ]
         )
 
+    # 裏コマンド（ネタ）
+    elif event.message.text == "ぬるぽ":
+        reply_message = "ｶﾞｯ"
+        repMessage(event, reply_message)
+
     # 乗車受付ボタン押下
     elif event.message.text == "乗車受付":
         if not userId in users: #usersにuserIdがまだ入っていなければ真
@@ -106,20 +111,22 @@ def handle_message(event):
     elif event.message.text in cources:
         selectCource(event, event.message.text)
 
-    # 氏名入力時
+    # 氏名 いつから？　いつまで？　登校便　下校便　特記事項　入力時
     elif event.message.text not in cources:
-        studentName(event,event.message.text)
-    
-    # いつから？
-    elif event.message.text == "いつから？":
-        # ex:20220601 -> 2022/06/01に変換して格納する
-        # 桁数は8桁とする
-        dateFrom(event, event.message.text)
-    # いつまで？
-    elif event.message.text == "いつまで？":
-        # ex:20220601 -> 2022/06/01
-        # 桁数は8桁とする
-        dateTo(event, event.message.text)
+        # 氏名入力時
+        if users[userId]["Shimei"] == "":
+            users[userId]["Shimei"] = event.message.text
+            studentName(event,event.message.text)
+        # いつから？
+        elif event.message.text == "いつから？":
+            # ex:20220601 -> 2022/06/01に変換して格納する
+            # 桁数は8桁とする
+            dateFrom(event, event.message.text)
+        # いつまで？
+        elif event.message.text == "いつまで？":
+            # ex:20220601 -> 2022/06/01
+            # 桁数は8桁とする
+            dateTo(event, event.message.text)
 
     # # コース名
     # elif event.message.text:
@@ -261,14 +268,6 @@ def handle_message(event):
     #         ]
     #     )
     #     users[userId]["mode"] = 0
-
-    # 裏コマンド（ネタ）
-    elif event.message.text == "ぬるぽ":
-        if not userId in users: #usersにuserIdがまだ入っていなければ真
-            users[userId] = {}
-        reply_message = "ｶﾞｯ"
-        users[userId]["mode"] = 0
-        repMessage(event, reply_message)
 
 # 学校名が選択されたときの動作
 def selectSchool(event, strSchool):
