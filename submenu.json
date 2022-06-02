@@ -24,9 +24,10 @@
         "type": "button",
         "height": "sm",
         "action": {
-          "type": "postback",
-          "label": "action",
-          "data": "hello"
+          "type": "datetimepicker",
+          "label": "いつから？",
+          "data": "action=datetemp&selectId=1",
+          "mode": "date"
         }
       },
       {
@@ -34,16 +35,11 @@
         "action": {
           "type": "datetimepicker",
           "label": "いつまで？",
-          "data": "dateTo",
+          "data": "action=datetemp&selectId=2",
           "mode": "date"
         }
       }
     ],
     "flex": 0
-  },
-  "action": {
-    "type": "postback",
-    "label": "action",
-    "data": "hello"
   }
 }
