@@ -117,12 +117,12 @@ def handle_message(event):
         studentName(event,event.message.text)
         
     # いつから？
-    elif users[userId]["From"] == "":
+    elif event.message.text[-2:] == "いつから？":
         # ex:20220601 -> 2022/06/01に変換して格納する
         # 桁数は8桁とする
         dateFrom(event, event.message.text)
     # いつまで？
-    elif users[userId]["To"] == "":
+    elif event.message.text[-2:] == "いつまで？":
         # ex:20220601 -> 2022/06/01
         # 桁数は8桁とする
         dateTo(event, event.message.text)
