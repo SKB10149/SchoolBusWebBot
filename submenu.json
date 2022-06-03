@@ -29,7 +29,7 @@
           "data": "date",
           "mode": "date",
             "params": {
-              "date": "none"
+              "data": "date"
             }
         }
       }
