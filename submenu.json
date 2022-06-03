@@ -26,7 +26,7 @@
         "action": {
           "type": "datetimepicker",
           "label": "いつから？",
-          "data": "dateFrom",
+          "data": "date",
           "mode": "date"
         }
       },
@@ -35,7 +35,7 @@
         "action": {
           "type": "datetimepicker",
           "label": "いつまで？",
-          "data": "dateTo",
+          "data": "date",
           "mode": "date"
         }
       }
