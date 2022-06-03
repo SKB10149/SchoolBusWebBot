@@ -40,11 +40,11 @@
         }
       }
     ],
-    "flex": 0
-  },
-  "action": {
-    "type": "postback",
-    "label": "action",
-    "data": "date"
+    "flex": 0,
+    "action": {
+      "type": "postback",
+      "label": "action",
+      "data": "hello"
+    }
   }
 }
