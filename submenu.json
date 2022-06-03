@@ -24,18 +24,13 @@
         "type": "button",
         "height": "sm",
         "action": {
-          "type": "postback",
-          "label": "action",
-          "data": "hello"
+          "type": "datetimepicker",
+          "label": "いつから？",
+          "data": "date",
+          "mode": "date"
         }
       }
     ],
-    "flex": 0,
-    "action": {
-      "type": "datetimepicker",
-      "label": "いつから？",
-      "data": "dateFrom",
-      "mode": "date"
-    }
+    "flex": 0
   }
 }
