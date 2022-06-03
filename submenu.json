@@ -27,7 +27,10 @@
           "type": "datetimepicker",
           "label": "いつから？",
           "data": "date",
-          "mode": "date"
+          "mode": "date",
+            "params": {
+              "date": "none"
+            }
         }
       }
     ],
