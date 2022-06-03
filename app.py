@@ -277,11 +277,11 @@ def handle_message(event):
 @handler.add(PostbackEvent)
 def on_postback(event):
     # reply_token = event.reply_token
-    user_id = event.source.user_id
+    userId = event.source.user_id
     postback_msg = event.postback.date
 
     line_bot_api.push_message(
-        to=user_id,
+        to=userId,
         messages=TextSendMessage(text=postback_msg)
     )
 
