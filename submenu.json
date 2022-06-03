@@ -42,9 +42,10 @@
     ],
     "flex": 0,
     "action": {
-      "type": "message",
+      "type": "datetimepicker",
       "label": "action",
-      "text": "hello"
+      "data": "hello",
+      "mode": "date"
     }
   }
 }
