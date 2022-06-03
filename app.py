@@ -8,7 +8,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, FlexSendMessage, QuickReply
+    MessageEvent, TextMessage, TextSendMessage, FlexSendMessage, PostbackTemplateAction, PostbackEvent
 )
 import json
 import logging
@@ -273,6 +273,14 @@ def handle_message(event):
     #         ]
     #     )
     #     users[userId]["mode"] = 0
+
+@handler.add(PostbackEvent)
+def on_postback(event):
+    # reply_token = event.reply_token
+    # user_id = event.source.user_id
+    postback_msg = event.postback.data
+
+    repMessage(event, postback_msg)
 
 # 学校名が選択されたときの動作
 def selectSchool(event, strSchool):
