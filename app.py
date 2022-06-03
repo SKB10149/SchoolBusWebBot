@@ -277,10 +277,13 @@ def handle_message(event):
 @handler.add(PostbackEvent)
 def on_postback(event):
     # reply_token = event.reply_token
-    # user_id = event.source.user_id
+    user_id = event.source.user_id
     postback_msg = event.postback.data
 
-    repMessage(event, postback_msg)
+    line_bot_api.push_message(
+        to=user_id,
+        messages=TextSendMessage(text=postback_msg)
+    )
 
 # 学校名が選択されたときの動作
 def selectSchool(event, strSchool):
