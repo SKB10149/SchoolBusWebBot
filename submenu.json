@@ -29,7 +29,7 @@
           "data": "date",
           "mode": "date",
             "params": {
-              "data": "date"
+              "date":"2017-12-25T01:00"
             }
         }
       }
