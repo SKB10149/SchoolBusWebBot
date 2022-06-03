@@ -24,28 +24,18 @@
         "type": "button",
         "height": "sm",
         "action": {
-          "type": "datetimepicker",
-          "label": "いつから？",
-          "mode": "date",
-          "data": "date",
-            "action": {
-              "type": "postback",
-              "data": "date",
-              "displayText": "今日"
-            }
-        }
-      },
-      {
-        "type": "button",
-        "height": "sm",
-        "action": {
-          "type": "datetimepicker",
-          "label": "いつまで？",
-          "data": "date",
-          "mode": "date"
+          "type": "postback",
+          "label": "action",
+          "data": "hello"
         }
       }
     ],
-    "flex": 0
+    "flex": 0,
+    "action": {
+      "type": "datetimepicker",
+      "label": "いつから？",
+      "data": "dateFrom",
+      "mode": "date"
+    }
   }
 }
