@@ -27,8 +27,7 @@
           "type": "datetimepicker",
           "label": "いつから？",
           "data": "date",
-          "mode": "date",
-          "date":"2017-12-25T01:00"
+          "mode": "date"
         }
       }
     ],
