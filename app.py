@@ -73,7 +73,7 @@ def handle_message(event):
 
     # 裏コマンド（ネタ）
     elif event.message.text == "ぬるぽ":
-        reply_message = "ｶﾞｯｶﾞｯ"
+        reply_message = "ｶﾞｯ"
         repMessage(event, reply_message)
 
     elif event.message.text == "2022年06月02日":
