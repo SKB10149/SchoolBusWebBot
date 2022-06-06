@@ -278,7 +278,7 @@ def handle_message(event):
 def on_postback(event):
     # reply_token = event.reply_token
     userId = event.source.user_id
-    postback_msg = event.postback.date
+    postback_msg = event.postback.data
 
     line_bot_api.push_message(
         to=userId,
