@@ -359,7 +359,7 @@ def selectCource(event, strCource):
 
 # 氏名の入力時の動作
 def studentName(event,strName):
-    flex_message_json_dict = json.load(open("submenu.json","r",encoding="utf-8"))
+    flex_message_json_dict = json.load(open("dateFrom.json","r",encoding="utf-8"))
 
     # LINEで表示
     line_bot_api.reply_message(

@@ -23,19 +23,20 @@
       {
         "type": "button",
         "height": "sm",
-        "action": {
+        "action": [
+        {
           "type": "datetimepicker",
-          "label": "いつから？",
-          "data": "date",
-          "mode": "date"
-        }
+          "label": "いつから",
+          "mode": "date",
+          "data": "action=datetemp&selectId=1"
+        },
+        {
+          "type": "postback",
+          "label": "キャンセル",
+          "data": "action=datetemp&selectId=1"
+        }]
       }
     ],
-    "flex": 0,
-    "action": {
-      "type": "postback",
-      "label": "action",
-      "data": "date"
-    }
+    "flex": 0
   }
 }
