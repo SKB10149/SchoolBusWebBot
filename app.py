@@ -132,7 +132,7 @@ def on_postback(event):
     if postback_msg == "action=datetemp&selectId=1":
         line_bot_api.push_message(
             to=userId,
-            messages=TextSendMessage(text={postback_msg}"受信")
+            messages=TextSendMessage(text=request.postback_msg)
         )
     elif  postback_msg == "action=datetemp&selectId=2":
         line_bot_api.push_message(
