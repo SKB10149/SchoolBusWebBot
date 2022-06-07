@@ -27,8 +27,7 @@
           "type": "datetimepicker",
           "label": "いつから",
           "data": "action=datetemp&selectId=1",
-          "mode": "date",
-          "displayText": "キャンセルされていません。"
+          "mode": "date"
         }
       },
       {

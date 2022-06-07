@@ -1,5 +1,7 @@
 from re import X
-from flask import Flask, request, abort
+import re
+from webbrowser import get
+from flask import Flask, render_template, request, abort
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -35,7 +37,7 @@ handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
 # Connect test
 @app.route("/")
 def test():
-    return "OK"
+    return "Hello Flask in Python"
 
 # Main App Program
 @app.route("/callback", methods=['POST'])
@@ -56,11 +58,16 @@ def callback():
 
     return 'OK'
 
+# @app.route('/callback', method=['GET'])
+# def callbackGet():
+#     field = request.args.get("field","")
+#     return render_template('sample.html', message = "ほげほげ")
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userId = event.source.user_id
     cources = ["旧青梅","友愛","成木","東大和","羽村","武蔵村山","御岳","奥多摩","青梅","立川","新青梅街道","福生","立川諏訪","青梅橋","昭和公園","江戸街道","多摩川","モノレール","国立","立川南","西東京","小平","富士見町","東村山","陣馬","石川","川口","大和田","東中神","檜原","昭島","新五日市","拝島","武蔵増戸","急行檜原","日野駅","万願寺","二俣尾","西","西砂","こぶし","仙川"]
-
+    # Memo users[userId]["mode"] == 1:
     if event.message.text[:12] == "スクールバス乗車電話受付":
         # LINEで表示
         line_bot_api.reply_message(
@@ -73,10 +80,6 @@ def handle_message(event):
 
     # 裏コマンド（ネタ）
     elif event.message.text == "ぬるぽ":
-        reply_message = "ｶﾞｯ"
-        repMessage(event, reply_message)
-
-    elif event.message.text == "2022年06月02日":
         reply_message = "ｶﾞｯ"
         repMessage(event, reply_message)
 
@@ -119,173 +122,29 @@ def handle_message(event):
     elif event.message.text not in cources:
         #users[userId]["Shimei"] = event.message.text
         studentName(event,event.message.text)
-        
-    # # いつから？
-    # elif event.message.text[-2:] == "いつから？":
-    #     # ex:20220601 -> 2022/06/01に変換して格納する
-    #     # 桁数は8桁とする
-    #     dateFrom(event, event.message.text)
-    # # いつまで？
-    # elif event.message.text[-2:] == "いつまで？":
-    #     # ex:20220601 -> 2022/06/01
-    #     # 桁数は8桁とする
-    #     dateTo(event, event.message.text)
-    # else:
-    #     repMessage(event, event.message.text)
-
-    # # コース名
-    # elif event.message.text:
-    #     selectCource():
-    # elif users[userId]["mode"] == 1:
-    #     # 選択されたコース名を格納
-    #     users[userId]["cource"] = event.message.text
-    #     # 結果へ書き込み
-    #     users[userId]["result"] += "、" + users[userId]["cource"] + "コース"
-
-    #     reply_message = "氏名(ひらがな or カタカナ)を入力してください。"
-    #     # LINEで表示
-    #     line_bot_api.reply_message(
-    #         event.reply_token,
-    #         [
-    #             TextSendMessage(text=reply_message)
-    #         ]
-    #     )
-    #     users[userId]["mode"] = 2
-    #     repMessage(event, event.message.text)
-    #     logging.debug()
-
-    # # 氏名
-    # elif users[userId]["mode"] == 2:
-    #     if event.message.text != "":
-    #         users[userId]["shimei"] = event.message.text
-    #         users[userId]["result"] += "、" + users[userId]["shimei"] + "さん"
-
-    #         reply_message = "いつから？(例:2022年5月1日 2022/5/1)"
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             [
-    #                 TextSendMessage(text=reply_message)
-    #             ]
-    #         )
-    #         users[userId]["mode"] = 3
-
-    # # いつから
-    # elif users[userId]["mode"] == 3:
-    #     if event.message.text != "":
-    #         users[userId]["dateFrom"] = event.message.text
-    #         users[userId]["result"] += "、" + users[userId]["dateFrom"] + " ～ "
-            
-    #         reply_message = "いつまで？(例:2022年5月1日 2022/5/1)"
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             [
-    #                 TextSendMessage(text=reply_message)
-    #             ]
-    #         )
-    #         users[userId]["mode"] = 4
-
-    # # いつまで
-    # elif users[userId]["mode"] == 4:
-    #     if event.message.text != "":
-    #         users[userId]["dateTo"] = event.message.text
-    #         users[userId]["result"] += users[userId]["dateTo"]
-            
-    #         reply_message = "登校便の乗車について"
-    #         # 登校JSON
-    #         flex_message_tokojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             [
-    #                 TextSendMessage(text=reply_message),
-    #                 FlexSendMessage(
-    #                     alt_text="alt_text",
-    #                     contents=flex_message_tokojson_dict
-    #                 )
-    #             ]
-    #         )
-    #         users[userId]["mode"] = 5
-
-    # # 登校乗る、乗らない、休む
-    # elif users[userId]["mode"] == 5:
-    #     users[userId]["toko"] = event.message.text
-
-    #     if event.message.text != "休む":
-    #         users[userId]["result"] += "\n登校便: " + users[userId]["toko"]
-    #     else:
-    #         users[userId]["result"] += users[userId]["toko"]
-        
-    #     if event.message.text == "休む":
-    #         reply_message = "特記事項があれば入力してください。"
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             [
-    #                 TextSendMessage(text=reply_message)
-    #             ]
-    #         )
-    #         users[userId]["mode"] = 7
-    #     else:
-    #         reply_message = "下校便の乗車について"
-    #         # 下校JSON
-    #         flex_message_gekojson_dict = json.load(open("toko.json","r",encoding="utf-8"))
-    #         line_bot_api.reply_message(
-    #             event.reply_token,
-    #             [
-    #                 TextSendMessage(text=reply_message),
-    #                 FlexSendMessage(
-    #                     alt_text="alt_text",
-    #                     contents=flex_message_gekojson_dict
-    #                 )
-    #             ]
-    #         )
-    #         users[userId]["mode"] = 6
-
-    # # 下校乗る、乗らない、または空白
-    # elif users[userId]["mode"] == 6:
-    #     users[userId]["geko"] = event.message.text
-    #     users[userId]["result"] += users[userId]["geko"]
-        
-    #     reply_message = "特記事項があれば入力してください。"
-    #     # 備考JSON
-    #     flex_message_bikojson_dict = json.load(open("biko.json","r",encoding="utf-8"))
-    #     line_bot_api.reply_message(
-    #         event.reply_token,
-    #         [
-    #             TextSendMessage(text=reply_message),
-    #             FlexSendMessage(
-    #                 alt_text="alt_text",
-    #                 contents=flex_message_bikojson_dict
-    #             )
-    #         ]
-    #     )
-    #     users[userId]["mode"] = 7
-
-    # # 備考
-    # elif users[userId]["mode"] == 7:
-    #     users[userId]["biko"] = event.message.text
-    #     users[userId]["result"] += "\n特記事項「 " + users[userId]["biko"] + " 」"
-    #     reply_message = f"{users[userId]['result']} "
-    #     reply_message2 = "乗車連絡を受け付けました。\nご連絡ありがとうございました。"
-    #     line_bot_api.reply_message(
-    #         event.reply_token,
-    #         [
-    #             TextSendMessage(text=reply_message),
-    #             TextSendMessage(text=reply_message2),
-    #         ]
-    #     )
-    #     users[userId]["mode"] = 0
 
 @handler.add(PostbackEvent)
 def on_postback(event):
-    # reply_token = event.reply_token
+    reply_token = event.reply_token
     userId = event.source.user_id
     postback_msg = event.postback.data
 
-    line_bot_api.push_message(
-        to=userId,
-        messages=TextSendMessage(text=postback_msg)
-    )
+    if postback_msg == "action=datetemp&selectId=1":
+        line_bot_api.push_message(
+            to=userId,
+            messages=TextSendMessage(text={postback_msg}"受信")
+        )
+    elif  postback_msg == "action=datetemp&selectId=2":
+        line_bot_api.push_message(
+            to=userId,
+            messages=TextSendMessage(text="キャンセルを受信")
+        )
+    
+# @handler.add(FollowEvent)
+# @handler.add(UnfollowEvent)
 
-# 学校名が選択されたときの動作
+## 関数 ##
+# 学校名が選択されたときの動作 & コースFlex起動
 def selectSchool(event, strSchool):
     if strSchool == "羽村特別支援学校":
         flex_message_hamurajson_dict = json.load(open("hamura.json","r",encoding="utf-8"))
@@ -357,7 +216,7 @@ def selectCource(event, strCource):
         ]
     )
 
-# 氏名の入力時の動作
+# 氏名の入力時の動作 & いつからdateTimePicker起動
 def studentName(event,strName):
     flex_message_json_dict = json.load(open("dateFrom.json","r",encoding="utf-8"))
 
@@ -374,7 +233,7 @@ def studentName(event,strName):
         ]
     )
     
-# いつから？
+# いつから？ & いつまでdateTimePicker起動
 def dateFrom(event,dateFrom_):
     tempFrom = datetime.strptime(dateFrom_, "%Y/%m/%d").date()
     # LINEで表示
@@ -386,7 +245,7 @@ def dateFrom(event,dateFrom_):
         ]
     )
 
-# いつまで？
+# いつまで？ & 登校便Flex起動
 def dateTo(event,dateTo_):
     tempTo = datetime.strptime(dateTo_, "%Y/%m/%d").date()
     # LINEで表示
@@ -398,7 +257,7 @@ def dateTo(event,dateTo_):
         ]
     )
 
-# 登校便に乗る？休み？
+# 登校便に乗る？休み？ & 下校便Flex起動
 def rideTokobin(event,toko):
     # LINEで表示
     line_bot_api.reply_message(
@@ -408,7 +267,7 @@ def rideTokobin(event,toko):
             #FlexMessage下校便乗る？休み
         ]
     )
-# 下校便に乗る？
+# 下校便に乗る？ & 特記事項Flex起動
 def rideGekobin(event,geko):
     # LINEで表示
     line_bot_api.reply_message(
@@ -429,16 +288,12 @@ def spMessage(event,biko):
         ]
     )
 
-# LINEへメッセージを送信する処理関数
+# LINEへ単一メッセージを送信する関数
 def repMessage(event, reply_message):
     line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=reply_message))
 
-
-
-# @handler.add(FollowEvent)
-# @handler.add(UnfollowEvent)
-
+## アプリケーション実行 ##
 if __name__ == "__main__":
     app.run()
