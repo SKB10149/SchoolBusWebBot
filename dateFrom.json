@@ -23,18 +23,21 @@
       {
         "type": "button",
         "height": "sm",
-        "action": [
-        {
+        "action": {
           "type": "datetimepicker",
           "label": "いつから",
-          "mode": "date",
-          "data": "action=datetemp&selectId=1"
-        },
-        {
+          "data": "action=datetemp&selectId=1",
+          "mode": "date"
+        }
+      },
+      {
+        "type": "button",
+        "action": {
           "type": "postback",
           "label": "キャンセル",
-          "data": "action=datetemp&selectId=1"
-        }]
+          "data": "action=datetemp&selectId=2",
+          "displayText": "キャンセルされました。"
+        }
       }
     ],
     "flex": 0
