@@ -125,17 +125,14 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def on_postback(event):
-    data = {}
     reply_token = event.reply_token
     userId = event.source.user_id
     postback_msg = event.postback.data
-    postback_params = event.postback.params['date']
-    reply_msg = postback_params
-
+    
     if postback_msg == "action=datetemp&selectId=1":
         line_bot_api.push_message(
             to=userId,
-            messages=TextSendMessage(text=reply_msg)
+            messages=TextSendMessage(text=event.postback.params['date'].replace('-','/'))
         )
     elif  postback_msg == "action=datetemp&selectId=2":
         line_bot_api.push_message(
