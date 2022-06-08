@@ -1,0 +1,81 @@
+{
+    "type": "carousel",
+    "contents": [
+      {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "いつから？",
+              "weight": "bold",
+              "align": "center"
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "datetimepicker",
+                "label": "日付入力",
+                "data": "from",
+                "mode": "date"
+              }
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "キャンセル",
+                "text": "キャンセル"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "いつまで？",
+              "weight": "bold",
+              "align": "center"
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "datetimepicker",
+                "label": "日付入力",
+                "data": "to",
+                "mode": "date"
+              }
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "キャンセル",
+                "text": "キャンセル"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }

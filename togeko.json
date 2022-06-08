@@ -1,0 +1,141 @@
+{
+    "type": "carousel",
+    "contents": [
+      {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "登校便",
+              "align": "center",
+              "weight": "bold"
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "乗車する",
+                "text": "登校便：乗車する"
+              }
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "乗車しない",
+                "text": "登校便：乗車しない"
+              }
+            }
+          ],
+          "action": {
+            "type": "postback",
+            "label": "action",
+            "data": "toko"
+          }
+        },
+        "styles": {
+          "footer": {
+            "separator": true,
+            "separatorColor": "#000000"
+          }
+        }
+      },
+      {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "下校便",
+              "weight": "bold",
+              "align": "center"
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "乗車する",
+                "text": "下校便：乗車する"
+              }
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "乗車しない",
+                "text": "下校便：乗車しない"
+              }
+            }
+          ],
+          "action": {
+            "type": "postback",
+            "label": "action",
+            "data": "geko"
+          }
+        },
+        "styles": {
+          "footer": {
+            "separator": true,
+            "separatorColor": "#000000"
+          }
+        }
+      },
+      {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "その他",
+              "weight": "bold",
+              "align": "center"
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "お休み",
+                "text": "お休み"
+              }
+            }
+          ],
+          "action": {
+            "type": "postback",
+            "label": "action",
+            "data": "yasumi"
+          }
+        },
+        "styles": {
+          "footer": {
+            "separator": true,
+            "separatorColor": "#000000"
+          }
+        }
+      }
+    ]
+  }
