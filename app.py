@@ -133,9 +133,6 @@ def on_postback(event):
     reply_msg = postback_params
 
     if postback_msg == "action=datetemp&selectId=1":
-        with open(postback_params, mode='wt', encoding='utf-8') as file:
-            json.dump(data, file)
-        reply_msg = str(file)
         line_bot_api.push_message(
             to=userId,
             messages=TextSendMessage(text=reply_msg)
