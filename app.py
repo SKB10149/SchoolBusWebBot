@@ -116,7 +116,7 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage("ログインするには、「ログイン」ボタンをタップしてください。")
+                TextSendMessage("はじめに「ログイン」ボタンをタップしてログインしてください。")
             )
 
     # 乗車受付ボタン押下
