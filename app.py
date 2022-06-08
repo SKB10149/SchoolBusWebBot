@@ -129,7 +129,7 @@ def on_postback(event):
     reply_token = event.reply_token
     userId = event.source.user_id
     postback_msg = event.postback.data
-    postback_params = event.postback.params['datetime']
+    postback_params = event.postback.params['date']
     reply_msg = postback_params
 
     if postback_msg == "action=datetemp&selectId=1":
