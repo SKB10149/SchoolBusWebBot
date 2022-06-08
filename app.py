@@ -127,13 +127,15 @@ def handle_message(event):
 def on_postback(event):
     reply_token = event.reply_token
     userId = event.source.user_id
-    postback_msg = event.postback.data
+    postback_msg = event.postback.params
 
     if postback_msg == "action=datetemp&selectId=1":
-        line_bot_api.push_message(
-            to=userId,
-            messages=TextSendMessage(text=request.postback_msg)
-        )
+        json_file = open('temp.json','w')
+        json.dump(dict,json_file)
+        # line_bot_api.push_message(
+        #     to=userId,
+        #     messages=TextSendMessage(text=request.postback_msg)
+        # )
     elif  postback_msg == "action=datetemp&selectId=2":
         line_bot_api.push_message(
             to=userId,
