@@ -125,7 +125,6 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def on_postback(event):
-    reply_token = event.reply_token
     userId = event.source.user_id
     postback_msg = event.postback.data
     
@@ -133,6 +132,17 @@ def on_postback(event):
         line_bot_api.push_message(
             to=userId,
             messages=TextSendMessage(text=event.postback.params['date'].replace('-','/'))
+        )
+        flex_message_json_dict = json.load(open("dateTo.json","r",encoding="utf-8"))
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text="いつまで？"),
+                FlexSendMessage(
+                    alt_text="alt_text",
+                    contents=flex_message_json_dict
+                )
+            ]
         )
     elif  postback_msg == "action=datetemp&selectId=2":
         line_bot_api.push_message(
