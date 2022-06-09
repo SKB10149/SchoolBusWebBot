@@ -23,294 +23,9 @@ from datetime import date, datetime
 
 #from flask_moment import Moment
 
-users = {}
-worksheets = {} #辞書を初期化する
-separator = "==================="
-
-## Flask ##
-app = Flask(__name__)
-
-## LINE ##
-line_bot_api = LineBotApi('LLaHIWKNBgwVlozdgSFtk3hYMa04AfYtEdGvXyYMIWZIIMUaZspah844LxKvxbARfEcKr0J8BeNi6jC47Eww4jbBu/lF43MgGJiwufZyL2XLP4J0bZXl+PDZVY5FOPg0kfQT4aYT3DZxj3fG3s/s/QdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
-
-# Connect test
-@app.route("/")
-def test():
-    return "Hello Flask in Python"
-
-# Main App Program
-@app.route("/callback", methods=['POST'])
-def callback():
-    # get X-Line-Signature header value
-    signature = request.headers['X-Line-Signature']
-
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # handle webhook body
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
-        abort(400)
-
-    return 'OK'
-
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    text = event.message.text
-    userId = event.source.user_id
-    cources = ["旧青梅","友愛","成木","東大和","羽村","武蔵村山","御岳","奥多摩","青梅","立川","新青梅街道","福生","立川諏訪","青梅橋","昭和公園","江戸街道","多摩川","モノレール","国立","立川南","西東京","小平","富士見町","東村山","陣馬","石川","川口","大和田","東中神","檜原","昭島","新五日市","拝島","武蔵増戸","急行檜原","日野駅","万願寺","二俣尾","西","西砂","こぶし","仙川"]
-    
-    MySession.register(userId)
-    
-    if ((MySession.read_context(userId) == "1" or 
-        MySession.read_context(userId) == "2" )):
-        line_bot_api.reply_message(
-            event.reply_token,
-            [   
-                TextSendMessage(text="初めにログインしてください。")
-            ]
-        )
-        # 現在のstatusを消して新規statusで初期化。
-        MySession.reset(userId)
-    
-    elif text == "キャンセル":
-        line_bot_api.reply_message(
-            event.reply_token,
-            [   
-                TextSendMessage(text="キャンセルされました。")
-            ]
-        )
-        # 現在のstatusを消して新規statusで初期化。
-        MySession.reset(userId)
-
-    elif text[:12] == "スクールバス乗車電話受付":
-        # LINEで表示
-        line_bot_api.reply_message(
-            event.reply_token,
-            [
-                TextSendMessage(text="以下の連絡先へお願いします。"),
-                TextSendMessage(text="042-579-7644")
-            ]
-        )
-        # 現在のstatusを消して新規statusで初期化。
-        MySession.reset(userId)
-
-    # 裏コマンド（ネタ）
-    elif text == "ぬるぽ":
-        reply_message = "ｶﾞｯ"
-        repMessage(event, reply_message)
-        # 現在のstatusを消して新規statusで初期化。
-        MySession.reset(userId)
-
-    elif MySession.read_context(userId) == "0":
-        if text == "ログイン":
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage("ログインに成功しました。/n乗車受付ボタンをタップしてください。")
-            )
-            MySession.update_context(userId, "1")
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage("はじめに「ログイン」ボタンをタップしてログインしてください。")
-            )
-
-    # 乗車受付ボタン押下
-    elif MySession.read_context(userId) == "1":
-        if event.message.text == "乗車受付":
-            MySession.update_context(userId, "2")
-            MySession.update_uketsuketype(userId, "乗車受付")
-
-            reply_message = "学校名を選択してください。"
-            # 学校名一覧JSON
-            flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
-            
-            # LINEで表示
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    TextSendMessage(text=reply_message),
-                    FlexSendMessage(
-                        alt_text="alt_text",
-                        contents=flex_message_schooljson_dict
-                    )
-                ]
-            )
-        else:
-            error(event, userId)
-
-    # 学校名押下
-    elif MySession.read_context(userId) == "2":
-        if text[-2:] == "学校":
-            MySession.update_context(userId, "3")
-            flex_message_json_dict = selectSchool(event, text)
-            if flex_message_json_dict == 0:
-                error(event, userId)
-            else:
-                MySession.update_gakko(userId, "text")
-        elif text[-2:] == "学園":
-            MySession.update_context(userId, "3")
-            flex_message_json_dict = selectSchool(event, text)
-            if flex_message_json_dict == 0:
-                error(event, userId)
-            else:
-                MySession.update_gakko(userId, "text")
-        else:
-            error(event, userId)
-
-        # LINEで表示
-        line_bot_api.reply_message(
-            event.reply_token,
-            [
-                TextSendMessage(text=text),
-                FlexSendMessage(
-                    alt_text="alt_text",
-                    contents=flex_message_json_dict
-                )
-            ]
-        )
-
-    # コース名押下
-    elif MySession.read_context(userId) == "3":
-        if text in cources:
-            MySession.update_context(userId, "4")
-            strCource = selectCource(event, text)
-            MySession.update_cource(userId, strCource)
-
-            # LINEで表示
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    TextSendMessage(text=strCource+"コース"),
-                    TextSendMessage(text="氏名を入力して下さい（ひらがな or カタカナ）")
-                ]
-            )
-        else:
-            error(event, userId)
-
-    # 氏名入力
-    elif MySession.read_context(userId) == "4":
-        MySession.update_context(userId, "5")
-        strName = studentName(event,text)
-        MySession.update_shimei(userId, strName)  
-
-        # LINEで表示
-        line_bot_api.reply_message(
-            event.reply_token,
-            [
-                TextSendMessage(text=strName+"さん")
-            ]
-        )  
-
-    # いつから～いつまで
-    elif MySession.read_context(userId) == "5":
-        if text == "期間":
-            MySession.update_context(userId,"6")
-            flex_message_json_dict = json.load(open("dateFromTo.json","r",encoding="utf-8"))
-
-            # LINEで表示
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    FlexSendMessage(
-                        alt_text="alt_text",
-                        contents=flex_message_json_dict
-                    )
-                ]
-            )
-        elif text == "キャンセル":
-            error(event, userId)
-        else:
-            repMessage(event, "期間ボタンを押下してください。")
-    
-    # 登下校乗る乗らない　か　休み
-    elif MySession.read_context(userId) == "6":
-        if text == "登下校":
-            MySession.update_context(userId,"7")
-            flex_message_json_dict = json.load(open("togeko.json","r",encoding="utf-8"))
-
-            # LINEで表示
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    FlexSendMessage(
-                        alt_text="alt_text",
-                        contents=flex_message_json_dict
-                    )
-                ]
-            )
-
-        elif text == "キャンセル":
-            error(event, userId)
-        else:
-            repMessage(event, "期間を指定して下さい。/n次に進む場合は、登下校ボタンをタップしてください。")
-
-    elif MySession.read_context(userId) == "7":
-        if text == "登校：乗る":
-            MySession.update_toko(userId, text)
-        elif text == "登校：乗らない":
-            MySession.update_toko(userId, text)
-        elif text == "下校：乗る":
-            MySession.update_geko(userId, text)
-        elif text == "下校：乗らない":
-            MySession.update_geko(userId, text)
-        elif text == "休み":
-            MySession.update_sonota(userId, text)
-
-        # 備考
-        if text == "備考":
-            MySession.update_context(userId,"8")
-            flex_message_json_dict = json.load(open("biko.json","r",encoding="utf-8"))
-            # LINEで表示
-            line_bot_api.reply_message(
-                event.reply_token,
-                [
-                    TextSendMessage(text="特記事項がある場合は入力してください。/nない場合は「なし」をタップしてください。"),
-                    FlexSendMessage(
-                        alt_text="alt_text",
-                        contents=flex_message_json_dict
-                    )
-                ]
-            )
-
-    # 受付完了
-    elif MySession.read_context(userId) == "8":
-        repMessage(event, "乗車連絡を受付ました。/nご連絡ありがとうございました。")
-        MySession.update_context(userId, "0")
-
-# ポストバックイベント(dateTimePicker)
-@handler.add(PostbackEvent)
-def on_postback(event):
-    userId = event.source.user_id
-    postback_msg = event.postback.data
-    
-    if postback_msg == "datefrom":
-        line_bot_api.push_message(
-            to=userId,
-            messages=TextSendMessage(text=event.postback.params['date'].replace('-','/'))
-        )
-    elif postback_msg == "dateto":
-        line_bot_api.push_message(
-            to=userId,
-            messages=TextSendMessage(text=event.postback.params['date'].replace('-','/'))
-        )
-    elif  postback_msg == "cancel":
-        error(event, userId)
-
-@handler.add(FollowEvent)
-def on_followevent(event):
-    print("hogehoge")
-
-@handler.add(UnfollowEvent)
-def on_unfollowevent(event):
-    print("hogehoge")
-
 # Class
 class Status:
+    # コンストラクタ
     def __init__(self):
         self.context = "0"
         self.uketsuketype = ""
@@ -323,6 +38,7 @@ class Status:
         self.geko = ""
         self.sonota = ""
         self.biko = ""
+    # 
     def get_context(self):
         return self.context
     def set_context(self, context):
@@ -370,6 +86,7 @@ class Status:
 
 class MySession:
     _status_map = dict()
+    
     def register(user_id):
         if MySession._get_status(user_id) is None:
             MySession._put_status(user_id, Status())
@@ -450,6 +167,373 @@ class MySession:
         new_status = MySession._status_map.get(user_id)
         new_status.set_biko(biko)
         MySession._status_map[user_id] = new_status
+
+users = {}
+worksheets = {} #辞書を初期化する
+separator = "==================="
+
+## Flask ##
+app = Flask(__name__)
+
+## LINE ##
+line_bot_api = LineBotApi('LLaHIWKNBgwVlozdgSFtk3hYMa04AfYtEdGvXyYMIWZIIMUaZspah844LxKvxbARfEcKr0J8BeNi6jC47Eww4jbBu/lF43MgGJiwufZyL2XLP4J0bZXl+PDZVY5FOPg0kfQT4aYT3DZxj3fG3s/s/QdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('d88565cbfef0134d3637555c856849de')
+
+# Connect test
+@app.route("/")
+def test():
+    return "Hello Flask in Python"
+
+# Main App Program
+@app.route("/callback", methods=['POST'])
+def callback():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+
+    # handle webhook body
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        print("Invalid signature. Please check your channel access token/channel secret.")
+        abort(400)
+
+    return 'OK'
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    text = event.message.text
+    userId = event.source.user_id
+    cources = ["旧青梅","友愛","成木","東大和","羽村","武蔵村山","御岳","奥多摩","青梅","立川","新青梅街道","福生","立川諏訪","青梅橋","昭和公園","江戸街道","多摩川","モノレール","国立","立川南","西東京","小平","富士見町","東村山","陣馬","石川","川口","大和田","東中神","檜原","昭島","新五日市","拝島","武蔵増戸","急行檜原","日野駅","万願寺","二俣尾","西","西砂","こぶし","仙川"]
+    
+    MySession.register(userId)
+    
+    if text == "乗車受付":
+        if MySession.read_context(userId) == "0":
+            MySession.update_context(userId, "1")
+            MySession.update_uketsuketype(userId, "乗車受付")
+            reply_message = "学校名を選択してください。"
+            # 学校名一覧JSON
+            flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
+            # LINEで表示
+            line_bot_api.reply_message(
+                event.reply_token,
+                [
+                    TextSendMessage(text=reply_message),
+                    FlexSendMessage(
+                        alt_text="alt_text",
+                        contents=flex_message_schooljson_dict
+                    )
+                ]
+            )
+        elif MySession.read_context(userId) == "1":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "2":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "3":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "4":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "5":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "6":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "7":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+        elif MySession.read_context(userId) == "8":
+            repMessage(event, "乗車受付ボタンをタップしてください。")
+    # 学校名 -> コース名
+    elif MySession.read_context(userId) == "1":
+        if text[-2:] == "学校":
+            MySession.update_context(userId, "2")
+            flex_message_json_dict = selectSchool(event, text)
+            if flex_message_json_dict == 0:
+                error(event, userId)
+            else:
+                MySession.update_gakko(userId, "text")
+        elif text[-2:] == "学園":
+            MySession.update_context(userId, "2")
+            flex_message_json_dict = selectSchool(event, text)
+            if flex_message_json_dict == 0:
+                error(event, userId)
+            else:
+                MySession.update_gakko(userId, "text")
+    # コース名 -> 氏名
+    elif MySession.read_context(userId) == "2":
+        if text in cources:
+            MySession.update_context(userId, "3")
+            strCource = selectCource(event, text)
+            MySession.update_cource(userId, strCource)
+            # LINEで表示
+            line_bot_api.reply_message(
+                event.reply_token,
+                [
+                    TextSendMessage(text=strCource+"コース"),
+                    TextSendMessage(text="氏名を入力して下さい\n（ひらがな or カタカナ）フルネーム")
+                ]
+            )
+    # 氏名 -> 期間ボタンタップ促しmsg
+    elif MySession.read_context(userId) == "3":
+        print("hogehoge")
+    elif text == "期間指定":
+        print("hogehoge")
+    elif text == "登校便、下校便、お休み情報入力":
+        print("hogehoge")
+    elif text == "送信":
+        # LINEで表示
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text=MySession.read_gakko(userId)),
+                TextSendMessage(text=MySession.read_cource(userId)),
+                TextSendMessage(text=MySession.read_shimei(userId)),
+                TextSendMessage(text=MySession.read_dateFrom+"～"+MySession.read_dateTo(userId)),
+                TextSendMessage(text="登校便："+MySession.read_toko(userId)),
+                TextSendMessage(text="下校便："+MySession.read_gakko(userId)),
+                TextSendMessage(text=MySession.read_sonota(userId)),
+                TextSendMessage(text=MySession.read_biko(userId)),
+                TextSendMessage(text="で承りました。")
+            ]
+        )
+
+    # if ((MySession.read_context(userId) == "1" or 
+    #     MySession.read_context(userId) == "2" )):
+    #     line_bot_api.reply_message(
+    #         event.reply_token,
+    #         [   
+    #             TextSendMessage(text="初めにログインしてください。")
+    #         ]
+    #     )
+    #     # 現在のstatusを消して新規statusで初期化。
+    #     MySession.reset(userId)
+    
+    # elif text == "キャンセル":
+    #     line_bot_api.reply_message(
+    #         event.reply_token,
+    #         [   
+    #             TextSendMessage(text="キャンセルされました。")
+    #         ]
+    #     )
+    #     # 現在のstatusを消して新規statusで初期化。
+    #     MySession.reset(userId)
+
+    # elif text[:12] == "スクールバス乗車電話受付":
+    #     # LINEで表示
+    #     line_bot_api.reply_message(
+    #         event.reply_token,
+    #         [
+    #             TextSendMessage(text="以下の連絡先へお願いします。"),
+    #             TextSendMessage(text="042-579-7644")
+    #         ]
+    #     )
+    #     # 現在のstatusを消して新規statusで初期化。
+    #     MySession.reset(userId)
+
+    # elif MySession.read_context(userId) == "0":
+    #     if text == "ログイン":
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             TextSendMessage("ログインに成功しました。/n乗車受付ボタンをタップしてください。")
+    #         )
+    #         MySession.update_context(userId, "1")
+    #     else:
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             TextSendMessage("はじめに「ログイン」ボタンをタップしてログインしてください。")
+    #         )
+
+    # # 乗車受付ボタン押下
+    # elif MySession.read_context(userId) == "1":
+    #     if event.message.text == "乗車受付":
+    #         MySession.update_context(userId, "2")
+    #         MySession.update_uketsuketype(userId, "乗車受付")
+
+    #         reply_message = "学校名を選択してください。"
+    #         # 学校名一覧JSON
+    #         flex_message_schooljson_dict = json.load(open("school.json","r",encoding="utf-8"))
+            
+    #         # LINEで表示
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             [
+    #                 TextSendMessage(text=reply_message),
+    #                 FlexSendMessage(
+    #                     alt_text="alt_text",
+    #                     contents=flex_message_schooljson_dict
+    #                 )
+    #             ]
+    #         )
+    #     else:
+    #         error(event, userId)
+
+    # # 学校名押下
+    # elif MySession.read_context(userId) == "2":
+    #     if text[-2:] == "学校":
+    #         MySession.update_context(userId, "3")
+    #         flex_message_json_dict = selectSchool(event, text)
+    #         if flex_message_json_dict == 0:
+    #             error(event, userId)
+    #         else:
+    #             MySession.update_gakko(userId, "text")
+    #     elif text[-2:] == "学園":
+    #         MySession.update_context(userId, "3")
+    #         flex_message_json_dict = selectSchool(event, text)
+    #         if flex_message_json_dict == 0:
+    #             error(event, userId)
+    #         else:
+    #             MySession.update_gakko(userId, "text")
+    #     else:
+    #         error(event, userId)
+
+    #     # LINEで表示
+    #     line_bot_api.reply_message(
+    #         event.reply_token,
+    #         [
+    #             TextSendMessage(text=text),
+    #             FlexSendMessage(
+    #                 alt_text="alt_text",
+    #                 contents=flex_message_json_dict
+    #             )
+    #         ]
+    #     )
+
+    # # コース名押下
+    # elif MySession.read_context(userId) == "3":
+    #     if text in cources:
+    #         MySession.update_context(userId, "4")
+    #         strCource = selectCource(event, text)
+    #         MySession.update_cource(userId, strCource)
+
+    #         # LINEで表示
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             [
+    #                 TextSendMessage(text=strCource+"コース"),
+    #                 TextSendMessage(text="氏名を入力して下さい（ひらがな or カタカナ）")
+    #             ]
+    #         )
+    #     else:
+    #         error(event, userId)
+
+    # # 氏名入力
+    # elif MySession.read_context(userId) == "4":
+    #     MySession.update_context(userId, "5")
+    #     strName = studentName(event,text)
+    #     MySession.update_shimei(userId, strName)  
+
+    #     # LINEで表示
+    #     line_bot_api.reply_message(
+    #         event.reply_token,
+    #         [
+    #             TextSendMessage(text=strName+"さん")
+    #         ]
+    #     )  
+
+    # # いつから～いつまで
+    # elif MySession.read_context(userId) == "5":
+    #     if text == "期間":
+    #         MySession.update_context(userId,"6")
+    #         flex_message_json_dict = json.load(open("dateFromTo.json","r",encoding="utf-8"))
+
+    #         # LINEで表示
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             [
+    #                 FlexSendMessage(
+    #                     alt_text="alt_text",
+    #                     contents=flex_message_json_dict
+    #                 )
+    #             ]
+    #         )
+    #     elif text == "キャンセル":
+    #         error(event, userId)
+    #     else:
+    #         repMessage(event, "期間ボタンを押下してください。")
+    
+    # # 登下校乗る乗らない　か　休み
+    # elif MySession.read_context(userId) == "6":
+    #     if text == "登下校":
+    #         MySession.update_context(userId,"7")
+    #         flex_message_json_dict = json.load(open("togeko.json","r",encoding="utf-8"))
+
+    #         # LINEで表示
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             [
+    #                 FlexSendMessage(
+    #                     alt_text="alt_text",
+    #                     contents=flex_message_json_dict
+    #                 )
+    #             ]
+    #         )
+
+    #     elif text == "キャンセル":
+    #         error(event, userId)
+    #     else:
+    #         repMessage(event, "期間を指定して下さい。/n次に進む場合は、登下校ボタンをタップしてください。")
+
+    # elif MySession.read_context(userId) == "7":
+    #     if text == "登校：乗る":
+    #         MySession.update_toko(userId, text)
+    #     elif text == "登校：乗らない":
+    #         MySession.update_toko(userId, text)
+    #     elif text == "下校：乗る":
+    #         MySession.update_geko(userId, text)
+    #     elif text == "下校：乗らない":
+    #         MySession.update_geko(userId, text)
+    #     elif text == "休み":
+    #         MySession.update_sonota(userId, text)
+
+    #     # 備考
+    #     if text == "備考":
+    #         MySession.update_context(userId,"8")
+    #         flex_message_json_dict = json.load(open("biko.json","r",encoding="utf-8"))
+    #         # LINEで表示
+    #         line_bot_api.reply_message(
+    #             event.reply_token,
+    #             [
+    #                 TextSendMessage(text="特記事項がある場合は入力してください。/nない場合は「なし」をタップしてください。"),
+    #                 FlexSendMessage(
+    #                     alt_text="alt_text",
+    #                     contents=flex_message_json_dict
+    #                 )
+    #             ]
+    #         )
+
+    # # 受付完了
+    # elif MySession.read_context(userId) == "8":
+    #     repMessage(event, "乗車連絡を受付ました。/nご連絡ありがとうございました。")
+    #     MySession.update_context(userId, "0")
+
+# ポストバックイベント(dateTimePicker)
+@handler.add(PostbackEvent)
+def on_postback(event):
+    userId = event.source.user_id
+    postback_msg = event.postback.data
+    
+    if postback_msg == "datefrom":
+        line_bot_api.push_message(
+            to=userId,
+            messages=TextSendMessage(text=event.postback.params['date'].replace('-','/'))
+        )
+    elif postback_msg == "dateto":
+        line_bot_api.push_message(
+            to=userId,
+            messages=TextSendMessage(text=event.postback.params['date'].replace('-','/'))
+        )
+    elif  postback_msg == "cancel":
+        error(event, userId)
+
+@handler.add(FollowEvent)
+def on_followevent(event):
+    print("hogehoge")
+
+@handler.add(UnfollowEvent)
+def on_unfollowevent(event):
+    print("hogehoge")
 
 ## 関数 ##
 # 学校名が選択されたときの動作 & コースFlex起動
