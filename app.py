@@ -283,6 +283,7 @@ def handle_message(event):
     # 氏名 -> 期間ボタンタップ促しmsg
     elif MySession.read_context(userId) == "3":
         MySession.update_context(userId, "4")
+        repMessage(event, text)
     elif text == "期間指定":
         print("hogehoge")
     elif text == "登校便、下校便、お休み情報入力":
