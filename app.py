@@ -230,21 +230,12 @@ def handle_message(event):
                 ]
             )
         elif MySession.read_context(userId) == "1":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
+            repMessage(event, "学校名を選択してください。")
         elif MySession.read_context(userId) == "2":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
+            repMessage(event, "コース名を選択してください。")
         elif MySession.read_context(userId) == "3":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
-        elif MySession.read_context(userId) == "4":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
-        elif MySession.read_context(userId) == "5":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
-        elif MySession.read_context(userId) == "6":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
-        elif MySession.read_context(userId) == "7":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
-        elif MySession.read_context(userId) == "8":
-            repMessage(event, "乗車受付ボタンをタップしてください。")
+            repMessage(event, "氏名をフルネームで入力してください。")
+
     # 学校名 -> コース名
     elif MySession.read_context(userId) == "1":
         if text[-2:] == "学校":
@@ -253,14 +244,27 @@ def handle_message(event):
             if flex_message_json_dict == 0:
                 error(event, userId)
             else:
-                MySession.update_gakko(userId, "text")
+                MySession.update_gakko(userId, text)
         elif text[-2:] == "学園":
             MySession.update_context(userId, "2")
             flex_message_json_dict = selectSchool(event, text)
             if flex_message_json_dict == 0:
                 error(event, userId)
             else:
-                MySession.update_gakko(userId, "text")
+                MySession.update_gakko(userId, text)
+                
+        # LINEで表示
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text=text),
+                FlexSendMessage(
+                    alt_text="alt_text",
+                    contents=flex_message_json_dict
+                )
+            ]
+        )
+
     # コース名 -> 氏名
     elif MySession.read_context(userId) == "2":
         if text in cources:
@@ -275,6 +279,7 @@ def handle_message(event):
                     TextSendMessage(text="氏名を入力して下さい\n（ひらがな or カタカナ）フルネーム")
                 ]
             )
+
     # 氏名 -> 期間ボタンタップ促しmsg
     elif MySession.read_context(userId) == "3":
         print("hogehoge")
