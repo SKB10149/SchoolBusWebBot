@@ -253,12 +253,13 @@ def handle_message(event):
             else:
                 MySession.update_gakko(userId, text)
 
+        txt = MySession.update_gakko(userId, text)
         # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
             [
                 TextSendMessage(text=text),
-                TextSendMessage(text=MySession.update_gakko(userId, text)),
+                TextSendMessage(text=txt),
                 FlexSendMessage(
                     alt_text="alt_text",
                     contents=flex_message_json_dict
