@@ -229,12 +229,12 @@ def handle_message(event):
                     )
                 ]
             )
-        elif MySession.read_context(userId) == "1":
-            repMessage(event, "学校名を選択してください。")
-        elif MySession.read_context(userId) == "2":
-            repMessage(event, "コース名を選択してください。")
-        elif MySession.read_context(userId) == "3":
-            repMessage(event, "氏名をフルネームで入力してください。")
+        # elif MySession.read_context(userId) == "1":
+        #     repMessage(event, "学校名を選択してください。")
+        # elif MySession.read_context(userId) == "2":
+        #     repMessage(event, "コース名を選択してください。")
+        # elif MySession.read_context(userId) == "3":
+        #     repMessage(event, "氏名をフルネームで入力してください。")
 
     # 学校名 -> コース名
     elif MySession.read_context(userId) == "1":
@@ -258,6 +258,7 @@ def handle_message(event):
             event.reply_token,
             [
                 TextSendMessage(text=text),
+                TextSendMessage(text=MySession.update_gakko(userId, text)),
                 FlexSendMessage(
                     alt_text="alt_text",
                     contents=flex_message_json_dict
@@ -289,7 +290,6 @@ def handle_message(event):
     elif text == "登校便、下校便、お休み情報入力":
         print("hogehoge")
     elif text == "送信":
-        MySession.update_context(userId, "0")
         # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
@@ -305,6 +305,7 @@ def handle_message(event):
                 TextSendMessage(text="で承りました。")
             ]
         )
+        MySession.update_context(userId, "0")
 
     # if ((MySession.read_context(userId) == "1" or 
     #     MySession.read_context(userId) == "2" )):
