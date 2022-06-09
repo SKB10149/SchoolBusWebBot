@@ -252,7 +252,7 @@ def handle_message(event):
                 error(event, userId)
             else:
                 MySession.update_gakko(userId, text)
-                
+
         # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
@@ -282,12 +282,13 @@ def handle_message(event):
 
     # 氏名 -> 期間ボタンタップ促しmsg
     elif MySession.read_context(userId) == "3":
-        print("hogehoge")
+        MySession.update_context(userId, "4")
     elif text == "期間指定":
         print("hogehoge")
     elif text == "登校便、下校便、お休み情報入力":
         print("hogehoge")
     elif text == "送信":
+        MySession.update_context(userId, "0")
         # LINEで表示
         line_bot_api.reply_message(
             event.reply_token,
